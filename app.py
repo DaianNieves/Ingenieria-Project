@@ -65,7 +65,7 @@ def login_doctor():
                 session['rol'] = 'doctor'
                 session['nombre'] = doctor['nombre']
                 session['usuario_id'] = doctor['id']
-                return redirect(url_for('registrar_tratamiento', cita_id=1))  # Cambia 1 por el ID de la cita real
+                return redirect(url_for('panel_doctor')) 
             else:
                 flash('Correo o contraseña incorrectos', 'error')
 
@@ -113,14 +113,14 @@ def registrar_tratamiento(cita_id):
             cursor.execute(query, (cita_id, diagnostico, tratamiento, observaciones))
             conn.commit()
             flash('✅ Tratamiento registrado con éxito.', 'success')
-            return render_template('Dentista/registrar_tratamiento.html', cita_id=cita_id)
+            return redirect(url_for('panel_doctor'))
         except mysql.connector.Error as e:
             flash(f'❌ Error al registrar tratamiento: {e}', 'error')
         finally:
             if 'cursor' in locals(): cursor.close()
             if 'conn' in locals() and conn.is_connected(): conn.close()
 
-    return render_template('Dentista/panel_dentista.html', cita_id=cita_id)
+    return render_template('Dentista/registrar_tratamiento.html', cita_id=cita_id)
 
 
 @app.route('/logout')
