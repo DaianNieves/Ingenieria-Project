@@ -1,0 +1,133 @@
+{% extends 'layout.html' %}
+{% block title %}Registrar Tratamiento{% endblock %}
+
+{% block content %}
+<style>
+    .form-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 100px);
+        background-color: #f9fafb;
+    }
+
+    .treatment-form-container {
+        background-color: #ffffff;
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 480px;
+    }
+
+    .treatment-form-container h2 {
+        text-align: center;
+        margin-bottom: 1.2rem;
+        color: #1e3a8a;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .treatment-form-container label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.4rem;
+        display: block;
+    }
+
+    .treatment-form-container select,
+    .treatment-form-container textarea {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background-color: #f8fafc;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 70px;
+        max-height: 120px;
+    }
+
+    .submit-button,
+    .back-button {
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .submit-button button {
+        background-color: #1d4ed8;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-button button:hover {
+        background-color: #2563eb;
+    }
+
+    .back-button a {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: #475569;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .back-button a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="form-wrapper">
+    <div class="treatment-form-container">
+        <h2>🦷 Registrar Tratamiento</h2>
+        <form method="POST">
+            <div class="input-group">
+                <label for="diagnostico">Diagnóstico</label>
+                <select name="diagnostico" id="diagnostico" required>
+                    <option value="">-- Selecciona un diagnóstico --</option>
+                    <option value="Caries">Caries</option>
+                    <option value="Gingivitis">Gingivitis</option>
+                    <option value="Fractura dental">Fractura dental</option>
+                    <option value="Desgaste dental">Desgaste dental</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="tratamiento">Tratamiento Aplicado</label>
+                <select name="tratamiento" id="tratamiento" required>
+                    <option value="">-- Selecciona un tratamiento --</option>
+                    <option value="Obturación (resina)">Obturación (resina)</option>
+                    <option value="Limpieza dental">Limpieza dental</option>
+                    <option value="Extracción dental">Extracción dental</option>
+                    <option value="Endodoncia">Endodoncia</option>
+                    <option value="Colocación de corona">Colocación de corona</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="observaciones">Observaciones</label>
+                <textarea name="observaciones" id="observaciones" placeholder="Notas adicionales..."></textarea>
+            </div>
+
+            <div class="submit-button">
+                <button type="submit">Guardar Tratamiento</button>
+            </div>
+
+            <div class="back-button">
+                <a href="{{ url_for('panel_doctor') }}">← Regresar al Panel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

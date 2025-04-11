@@ -1,74 +1,54 @@
--- Crear la base de datos
-CREATE DATABASE Sistema_Dental;
-USE Sistema_Dental;
+-- Base de datos del sistema de clínica médica
+CREATE DATABASE IF NOT EXISTS sistema_citas;
+USE sistema_citas;
 
--- Tabla: Administrador
-CREATE TABLE Administrador (
-    ID_Administrador INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(50),
-    Apellido_Pat VARCHAR(50),
-    Apellido_Mat VARCHAR(50),
-    Telefono VARCHAR(15),
-    Direccion VARCHAR(100),
-    Correo VARCHAR(100) UNIQUE,
-    Contraseña VARCHAR(100)
+-- Tabla de usuarios (incluye administradores y doctores)
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    contraseña VARCHAR(255) NOT NULL,
+    rol ENUM('administrador', 'doctor') NOT NULL,
+    activo BOOLEAN DEFAULT TRUE
 );
 
--- Tabla: Pacientes
-CREATE TABLE Pacientes (
-    ID_Paciente INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(50),
-    Apellido_Pat VARCHAR(50),
-    Apellido_Mat VARCHAR(50),
-    Telefono VARCHAR(15),
-    Direccion VARCHAR(100),
-    Correo VARCHAR(100) UNIQUE,
-    Contraseña VARCHAR(100)
+-- Tabla de doctores con vínculo a usuarios
+CREATE TABLE IF NOT EXISTS doctores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    especialidad VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- Tabla: Especialidad
-CREATE TABLE Especialidad (
-    ID_Especialidad INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre_Especialidad VARCHAR(100),
-    Descripcion TEXT
+-- Tabla de pacientes
+CREATE TABLE IF NOT EXISTS pacientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    fecha_nacimiento DATE
 );
 
--- Tabla: Doctores
-CREATE TABLE Doctores (
-    ID_Doctor INT PRIMARY KEY AUTO_INCREMENT,
-    ID_Especialidad INT,
-    Nombre VARCHAR(50),
-    Apellido_Pat VARCHAR(50),
-    Apellido_Mat VARCHAR(50),
-    Telefono VARCHAR(15),
-    Direccion VARCHAR(100),
-    Correo VARCHAR(100) UNIQUE,
-    Contraseña VARCHAR(100),
-    FOREIGN KEY (ID_Especialidad) REFERENCES Especialidad(ID_Especialidad)
+-- Tabla de citas
+CREATE TABLE IF NOT EXISTS citas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    doctor_id INT NOT NULL,
+    paciente_id INT NOT NULL,
+    fecha DATETIME NOT NULL,
+    estado ENUM('pendiente', 'completada', 'cancelada') DEFAULT 'pendiente',
+    observaciones TEXT,
+    FOREIGN KEY (doctor_id) REFERENCES doctores(id),
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
 );
 
--- Tabla: Historial
-CREATE TABLE Historial (
-    ID_Historial INT PRIMARY KEY AUTO_INCREMENT,
-    ID_Paciente INT,
-    ID_Doctor INT,
-    Problema TEXT,
-    Tratamiento TEXT,
-    Antecedentes_Medicos TEXT,
-    Fecha DATE,
-    FOREIGN KEY (ID_Paciente) REFERENCES Pacientes(ID_Paciente),
-    FOREIGN KEY (ID_Doctor) REFERENCES Doctores(ID_Doctor)
-);
-
--- Tabla: Citas
-CREATE TABLE Citas (
-    ID_Cita INT PRIMARY KEY AUTO_INCREMENT,
-    ID_Paciente INT,
-    ID_Doctor INT,
-    Fecha DATE,
-    Hora TIME,
-    Motivo TEXT,
-    Estado ENUM('Pendiente', 'Confirmada', 'Cancelada', 'Atendida'),
-    FOREIGN KEY (ID_Paciente) REFERENCES Pacientes(ID_Paciente),
-    FOREIGN KEY (ID_Doctor) REFERENCES Doctores(ID_Doctor)
+-- Tabla de tratamientos
+CREATE TABLE IF NOT EXISTS tratamientos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cita_id INT NOT NULL,
+    diagnostico TEXT NOT NULL,
+    tratamiento_aplicado TEXT NOT NULL,
+    observaciones TEXT,
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cita_id) REFERENCES citas(id) ON DELETE CASCADE
 );
