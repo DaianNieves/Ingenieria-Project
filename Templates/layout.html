@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema Clínica Dental{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Estilos base -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #005792;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .user-info a.btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        main {
+            padding: 2rem;
+            min-height: calc(100vh - 140px);
+        }
+
+        footer {
+            background-color: #e8e8e8;
+            text-align: center;
+            padding: 1rem;
+            color: #333;
+            font-size: 0.85rem;
+        }
+
+        .btn {
+            background-color: #0284c7;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0369a1;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+
+            header h1 {
+                font-size: 1rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🦷 Clínica Dental - Sistema de Gestión</h1>
+    {% if session.get('nombre') %}
+    <div class="user-info">
+        <span>👤 {{ session.get('nombre') }}</span>
+        <a href="{{ url_for('logout') }}" class="btn">Cerrar Sesión</a>
+    </div>
+    {% endif %}
+</header>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer>
+    &copy; 2025 Clínica Dental | Todos los derechos reservados.
+</footer>
+
+</body>
+</html>

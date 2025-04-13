@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block title %}Panel del Dentista{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Bienvenido, Dr. {{ session['nombre'] }}</h2>
+    <p>Aquí puedes ver y gestionar tus citas y tratamientos.</p>
+
+    <div class="dashboard-links">
+        <a href="#">🗓️ Mis Citas</a>
+        <a href="{{ url_for('registrar_tratamiento', cita_id=1) }}">💊 Registrar Tratamientos</a>
+        <a href="{{ url_for('logout') }}">🚪 Cerrar Sesión</a>
+    </div>
+</div>
+{% endblock %}

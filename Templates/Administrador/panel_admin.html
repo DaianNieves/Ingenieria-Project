@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block title %}Panel del Administrador{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Bienvenido, {{ session['nombre'] }}</h2>
+    <p>Este es el panel de administración de la clínica dental.</p>
+
+    <div class="dashboard-links">
+        <a href="#">📋 Ver Doctores</a>
+        <a href="#">🗓️ Ver Citas</a>
+        <a href="#">📈 Reportes</a>
+        <a href="{{ url_for('logout') }}">🚪 Cerrar Sesión</a>
+    </div>
+</div>
+{% endblock %}

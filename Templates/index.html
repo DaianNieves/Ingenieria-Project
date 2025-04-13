@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block title %}Inicio | Clínica Dental{% endblock %}
+
+{% block content %}
+<div class="index-container">
+    <div class="welcome-section">
+        <h2>🦷 Bienvenido al Sistema de Gestión Clínica Dental</h2>
+        <p>Seleccione su rol para ingresar al sistema:</p>
+    </div>
+
+    <div class="role-cards">
+        <div class="role-card">
+            <h3>👨‍💼 Administrador</h3>
+            <p>Gestiona doctores, citas y reportes con facilidad.</p>
+            <a href="{{ url_for('login_admin') }}" class="btn">🔐 Ingresar como Administrador</a>
+        </div>
+        <div class="role-card">
+            <h3>🩺 Doctor</h3>
+            <p>Accede a tus citas y registra tratamientos de forma eficiente.</p>
+            <a href="{{ url_for('login_doctor') }}" class="btn">👨‍⚕️ Ingresar como Doctor</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
