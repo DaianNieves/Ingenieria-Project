@@ -2,16 +2,95 @@
 {% block title %}Panel del Dentista{% endblock %}
 
 {% block content %}
-<div class="dashboard">
-    <h2>Bienvenido, Dr. {{ session['nombre'] }}</h2>
-    <p>Aquí puedes ver y gestionar tus citas y tratamientos.</p>
+<style>
+    .dashboard-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        background: linear-gradient(to right, #e0f2fe, #f0f9ff);
+        padding: 2rem;
+    }
 
-    <div class="dashboard-links">
-        <a href="{{ url_for('registrar_cita') }}">📅 Registrar Cita</a>
-        <a href="{{ url_for('ver_citas') }}">🗓️ Mis Citas</a>
-        <a href="{{ url_for('registrar_tratamiento', cita_id=1) }}">💊 Registrar Tratamientos</a>
-        <a href="{{ url_for('ver_opcion_reportes') }}">📊 Ver Reportes</a>  <!-- ✅ Enlace añadido -->
-        <a href="{{ url_for('logout') }}">🚪 Cerrar Sesión</a>
+    .dashboard {
+        background-color: #ffffff;
+        padding: 2rem 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .dashboard h2 {
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+        font-size: 1.8rem;
+        font-weight: 800;
+    }
+
+    .dashboard p {
+        color: #334155;
+        margin-bottom: 2rem;
+        font-size: 1.05rem;
+    }
+
+    .dashboard-links {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .dashboard-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.9rem 1.2rem;
+        background-color: #2563eb;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .dashboard-links a:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (min-width: 500px) {
+        .dashboard-links {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-wrapper">
+    <div class="dashboard">
+        <h2>👨‍⚕️ Bienvenido, Dr. {{ session['nombre'] }}</h2>
+        <p>Administra tus citas, tratamientos y reportes desde aquí.</p>
+
+        <div class="dashboard-links">
+            <a href="{{ url_for('registrar_cita') }}">📅 Registrar Cita</a>
+            <a href="{{ url_for('ver_citas') }}">🗓️ Ver Citas</a>
+            <a href="{{ url_for('seleccionar_cita_tratamiento') }}">💊 Registrar Tratamientos</a>
+            <a href="{{ url_for('ver_opcion_reportes') }}">📊 Ver Reportes</a>
+            <a href="{{ url_for('logout') }}">🚪 Cerrar Sesión</a>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -8,88 +8,144 @@
         justify-content: center;
         align-items: center;
         min-height: calc(100vh - 100px);
-        background-color: #f9fafb;
+        background: linear-gradient(to right, #e0f2fe, #f0f9ff);
+        padding: 2rem;
     }
 
     .treatment-form-container {
         background-color: #ffffff;
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         width: 100%;
-        max-width: 480px;
+        max-width: 560px;
+        border-top: 6px solid #2563eb;
     }
 
     .treatment-form-container h2 {
         text-align: center;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1.5rem;
         color: #1e3a8a;
-        font-size: 1.3rem;
-        font-weight: 600;
+        font-size: 1.7rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
     }
 
-    .treatment-form-container label {
+    .section-title {
+        margin: 1rem 0 0.7rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #111827;
+        border-left: 4px solid #2563eb;
+        padding-left: 10px;
+    }
+
+    .info-group {
+        background-color: #f1f5f9;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.2rem;
+    }
+
+    .info-group p {
+        margin: 0.35rem 0;
+        color: #334155;
+        font-size: 0.95rem;
+    }
+
+    .input-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .input-group label {
         font-weight: 600;
-        color: #374151;
+        color: #1f2937;
         margin-bottom: 0.4rem;
         display: block;
     }
 
-    .treatment-form-container select,
-    .treatment-form-container textarea {
+    .input-group select,
+    .input-group textarea {
         width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
+        padding: 0.55rem;
         border: 1px solid #cbd5e1;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 0.95rem;
         background-color: #f8fafc;
+        transition: border-color 0.3s;
+    }
+
+    .input-group select:focus,
+    .input-group textarea:focus {
+        border-color: #2563eb;
+        outline: none;
     }
 
     textarea {
         resize: vertical;
-        min-height: 70px;
-        max-height: 120px;
+        min-height: 80px;
+        max-height: 150px;
     }
 
-    .submit-button,
-    .back-button {
+    .submit-button {
         text-align: center;
-        margin-top: 0.5rem;
+        margin-top: 1.5rem;
     }
 
     .submit-button button {
-        background-color: #1d4ed8;
+        background-color: #2563eb;
         color: white;
-        padding: 0.5rem 1.5rem;
+        padding: 0.6rem 2rem;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 1rem;
         cursor: pointer;
+        font-weight: 600;
         transition: background-color 0.3s ease;
     }
 
     .submit-button button:hover {
-        background-color: #2563eb;
+        background-color: #1d4ed8;
+    }
+
+    .back-button {
+        text-align: center;
+        margin-top: 1rem;
     }
 
     .back-button a {
-        display: inline-block;
-        margin-top: 0.5rem;
         color: #475569;
         text-decoration: none;
         font-size: 0.9rem;
+        transition: color 0.2s;
     }
 
     .back-button a:hover {
+        color: #1e40af;
         text-decoration: underline;
     }
 </style>
 
 <div class="form-wrapper">
     <div class="treatment-form-container">
-        <h2>🦷 Registrar Tratamiento</h2>
+        <h2>🦷 Registrar Tratamiento para {{ cita.paciente }}</h2>
+
+        <div class="section-title">👤 Datos del Paciente</div>
+        <div class="info-group">
+            <p><strong>📛 Nombre:</strong> {{ cita.paciente }}</p>
+            <p><strong>📞 Teléfono:</strong> {{ cita.telefono }}</p>
+            <p><strong>🎂 Fecha de Nacimiento:</strong> {{ cita.fecha_nacimiento or '—' }}</p>
+        </div>
+
+        <div class="section-title">📅 Detalles de la Cita</div>
+        <div class="info-group">
+            <p><strong>🕒 Fecha y Hora:</strong> {{ cita.fecha or '—' }}</p>
+            <p><strong>📝 Observaciones:</strong> {{ cita.observaciones or '—' }}</p>
+        </div>
+
         <form method="POST">
+            <div class="section-title">💊 Detalles del Tratamiento</div>
+
             <div class="input-group">
                 <label for="diagnostico">Diagnóstico</label>
                 <select name="diagnostico" id="diagnostico" required>
@@ -121,11 +177,11 @@
             </div>
 
             <div class="submit-button">
-                <button type="submit">Guardar Tratamiento</button>
+                <button type="submit">💾 Guardar Tratamiento</button>
             </div>
 
             <div class="back-button">
-                <a href="{{ url_for('panel_doctor') }}">← Regresar al Panel</a>
+                <a href="{{ url_for('ver_citas') }}">← Volver a Mis Citas</a>
             </div>
         </form>
     </div>
