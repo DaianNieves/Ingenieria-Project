@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block title %}Doctores Registrados{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-container">
+    <div class="admin-header">
+        <h2>👨‍⚕️ Panel de Doctores</h2>
+        <p>Listado de doctores registrados en el sistema.</p>
+
+        <div style="text-align: right; margin-top: 10px;">
+            <a href="{{ url_for('registrar_doctor') }}" class="btn btn-primary">➕ Registrar Doctor</a>
+        </div>
+    </div>
+
+    {% if doctores %}
+    <div class="table-responsive">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Especialidad</th>
+                    <th>Teléfono</th>
+                    <th>Fecha de Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doctor in doctores %}
+                <tr>
+                    <td>{{ doctor.nombre }}</td>
+                    <td>{{ doctor.correo }}</td>
+                    <td>{{ doctor.especialidad }}</td>
+                    <td>{{ doctor.telefono or '—' }}</td>
+                    <td>{{ doctor.fecha_registro.strftime('%d/%m/%Y') }}</td>
+                    <td class="action-buttons">
+                        <a href="{{ url_for('editar_doctor', id=doctor.id) }}" class="btn-action edit">🖊️ Editar</a>
+                        <form action="{{ url_for('eliminar_doctor', id=doctor.id) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este doctor?');">🗑️ Eliminar</button>
+                        </form>
+                    </td>                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-message">No hay doctores registrados actualmente.</p>
+    {% endif %}
+
+    <div class="back-link-container">
+        <a class="dashboard-card back-link" href="{{ url_for('panel_admin') }}">⬅️ Volver al Panel</a>
+    </div>
+</div>
+{% endblock %}

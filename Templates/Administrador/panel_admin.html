@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block title %}Panel del Administrador{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-container">
+    <div class="admin-welcome">
+        <h2>👋 Bienvenido, {{ session['nombre'] }}</h2>
+        <p>Este es el panel de administración de la clínica dental. Usa los accesos rápidos para navegar.</p>
+    </div>
+
+    <div class="dashboard-links">
+        <a href="{{ url_for('panel_admin_doc') }}" class="dashboard-card">📋 Ver Doctores</a>
+        <a href="#" class="dashboard-card">🗓️ Ver Citas</a>
+        <a href="#" class="dashboard-card">📈 Reportes</a>
+        <a href="{{ url_for('logout') }}" class="dashboard-card logout">🚪 Cerrar Sesión</a>
+    </div>
+</div>
+{% endblock %}
