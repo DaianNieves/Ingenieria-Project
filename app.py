@@ -29,7 +29,6 @@ def login_admin():
         try:
             conn = get_connection()
             cursor = conn.cursor(dictionary=True)
-            # Buscar en usuarios donde rol sea 'administrador'
             cursor.execute("SELECT * FROM usuarios WHERE correo = %s AND rol = 'administrador'", (correo,))
             admin = cursor.fetchone()
 
@@ -57,7 +56,6 @@ def login_doctor():
         try:
             conn = get_connection()
             cursor = conn.cursor(dictionary=True)
-            # Buscar en usuarios donde el rol sea 'doctor'
             cursor.execute("SELECT * FROM usuarios WHERE correo = %s AND rol = 'doctor'", (correo,))
             doctor = cursor.fetchone()
 
@@ -68,10 +66,8 @@ def login_doctor():
                 return redirect(url_for('panel_doctor')) 
             else:
                 flash('Correo o contraseña incorrectos', 'error')
-
         except mysql.connector.Error as e:
             flash(f'Error al conectar con la base de datos: {e}', 'error')
-
         finally:
             if 'cursor' in locals(): cursor.close()
             if 'conn' in locals() and conn.is_connected(): conn.close()
@@ -148,7 +144,51 @@ def panel_admin_doc():
 
     return render_template('Administrador/panel_admin_doc.html', doctores=doctores)
 
-#Para edición y eliminación de doctores
+@app.route('/panel/administrador/doctores/registrar', methods=['GET', 'POST'])
+def registrar_doctor():
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Inicia sesión como administrador.', 'error')
+        return redirect(url_for('login_admin'))
+
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        contraseña = request.form['contraseña']
+        especialidad = request.form['especialidad']
+        telefono = request.form['telefono']
+
+        hashed_password = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+
+            query_usuario = """
+                INSERT INTO usuarios (nombre, correo, contraseña, rol)
+                VALUES (%s, %s, %s, 'doctor')
+            """
+            cursor.execute(query_usuario, (nombre, correo, hashed_password))
+            usuario_id = cursor.lastrowid
+
+            query_doctor = """
+                INSERT INTO doctores (usuario_id, especialidad, telefono, fecha_registro)
+                VALUES (%s, %s, %s, NOW())
+            """
+            cursor.execute(query_doctor, (usuario_id, especialidad, telefono))
+
+            conn.commit()
+            flash('✅ Doctor registrado correctamente.', 'success')
+            return redirect(url_for('panel_admin_doc'))
+
+        except mysql.connector.Error as e:
+            flash(f'❌ Error al registrar doctor: {e}', 'error')
+
+        finally:
+            if 'cursor' in locals(): cursor.close()
+            if 'conn' in locals() and conn.is_connected(): conn.close()
+
+    return render_template('Administrador/registrar_doctor.html')
+
 @app.route('/editar_doctor/<int:id>')
 def editar_doctor(id):
     # lógica para editar
@@ -164,7 +204,6 @@ def eliminar_doctor(id):
         conn = get_connection()
         cursor = conn.cursor()
 
-        # 1. Obtener el usuario_id del doctor
         cursor.execute("SELECT usuario_id FROM doctores WHERE id = %s", (id,))
         result = cursor.fetchone()
 
@@ -173,8 +212,6 @@ def eliminar_doctor(id):
             return redirect(url_for('panel_admin_doc'))
 
         usuario_id = result[0]
-
-        # 2. Eliminar al usuario (esto eliminará automáticamente al doctor por ON DELETE CASCADE)
         cursor.execute("DELETE FROM usuarios WHERE id = %s", (usuario_id,))
         conn.commit()
 
@@ -188,7 +225,6 @@ def eliminar_doctor(id):
         if 'conn' in locals() and conn.is_connected(): conn.close()
 
     return redirect(url_for('panel_admin_doc'))
-
 
 @app.route('/logout')
 def logout():
