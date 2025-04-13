@@ -229,7 +229,54 @@ def panel_admin_doc():
             conn.close()
     return render_template('Administrador/panel_admin_doc.html', doctores=doctores)
 
-# Para edición y eliminación de doctores
+# Rutas para edición, registro y eliminación de doctores
+@app.route('/panel/administrador/doctores/registrar', methods=['GET', 'POST'])
+def registrar_doctor():
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Inicia sesión como administrador.', 'error')
+        return redirect(url_for('login_admin'))
+
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        contraseña = request.form['contraseña']
+        especialidad = request.form['especialidad']
+        telefono = request.form['telefono']
+
+        hashed_password = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+
+            query_usuario = """
+                INSERT INTO usuarios (nombre, correo, contraseña, rol)
+                VALUES (%s, %s, %s, 'doctor')
+            """
+            cursor.execute(query_usuario, (nombre, correo, hashed_password))
+            usuario_id = cursor.lastrowid
+
+            query_doctor = """
+                INSERT INTO doctores (usuario_id, especialidad, telefono, fecha_registro)
+                VALUES (%s, %s, %s, NOW())
+            """
+            cursor.execute(query_doctor, (usuario_id, especialidad, telefono))
+
+            conn.commit()
+            flash('✅ Doctor registrado correctamente.', 'success')
+            return redirect(url_for('panel_admin_doc'))
+
+        except mysql.connector.Error as e:
+            flash(f'❌ Error al registrar doctor: {e}', 'error')
+
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            if 'conn' in locals() and conn.is_connected():
+                conn.close()
+
+    return render_template('Administrador/registrar_doctor.html')
+
 @app.route('/editar_doctor/<int:id>')
 def editar_doctor(id):
     # Lógica para editar (completar según necesidad)
