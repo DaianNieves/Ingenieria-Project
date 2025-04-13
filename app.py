@@ -122,6 +122,32 @@ def registrar_tratamiento(cita_id):
 
     return render_template('Dentista/registrar_tratamiento.html', cita_id=cita_id)
 
+@app.route('/panel/administrador/doctores')
+def panel_admin_doc():
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Inicia sesión como administrador.', 'error')
+        return redirect(url_for('login_admin'))
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT d.id, u.nombre, u.correo, d.especialidad, d.telefono, d.fecha_registro
+            FROM doctores d
+            JOIN usuarios u ON d.usuario_id = u.id
+            WHERE u.rol = 'doctor'
+        """
+        cursor.execute(query)
+        doctores = cursor.fetchall()
+    except mysql.connector.Error as e:
+        flash(f'Error al obtener doctores: {e}', 'error')
+        doctores = []
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        if 'conn' in locals() and conn.is_connected(): conn.close()
+
+    return render_template('Administrador/panel_admin_doc.html', doctores=doctores)
+
 
 @app.route('/logout')
 def logout():
