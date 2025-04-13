@@ -1,8 +1,10 @@
 import bcrypt
-from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask import Flask, render_template, request, redirect, session, url_for, flash, make_response
 from werkzeug.security import check_password_hash
 from config import Config
 import mysql.connector
+import io
+from xhtml2pdf import pisa
 
 app = Flask(__name__, template_folder='Templates')
 app.config.from_object(Config)
@@ -20,19 +22,128 @@ def get_connection():
 def index():
     return render_template('index.html')
 
+@app.route('/reportes', methods=['GET', 'POST'])
+def seleccionar_reporte():
+    if 'rol' not in session:
+        flash("Debes iniciar sesión para acceder a los reportes", "error")
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        tipo = request.form.get('tipo_reporte')
+        formato = request.form.get('formato')
+        if tipo and formato:
+            if formato == 'pantalla':
+                return redirect(url_for('ver_reporte', tipo=tipo))
+            elif formato == 'pdf':
+                return redirect(url_for('descargar_reporte_pdf', tipo=tipo))
+    return render_template('Reportes/seleccionar_reporte.html')
+
+@app.route('/reportes/ver/<tipo>')
+def ver_reporte(tipo):
+    if 'rol' not in session:
+        flash("Debes iniciar sesión para ver reportes", "error")
+        return redirect(url_for('index'))
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        if tipo == 'citas':
+            cursor.execute("""
+                SELECT c.fecha, p.nombre AS paciente, p.telefono, p.fecha_nacimiento, c.observaciones
+                FROM citas c
+                JOIN pacientes p ON c.paciente_id = p.id
+                ORDER BY c.fecha DESC
+            """)
+            datos = cursor.fetchall()
+            return render_template('Reportes/reporte_citas.html', citas=datos)
+        elif tipo == 'tratamientos':
+            cursor.execute("""
+                SELECT t.fecha_registro, p.nombre AS paciente, t.diagnostico, t.tratamiento_aplicado, t.observaciones
+                FROM tratamientos t
+                JOIN citas c ON t.cita_id = c.id
+                JOIN pacientes p ON c.paciente_id = p.id
+                ORDER BY t.fecha_registro DESC
+            """)
+            datos = cursor.fetchall()
+            return render_template('Reportes/reporte_tratamientos.html', tratamientos=datos)
+        else:
+            flash("Tipo de reporte no válido", "error")
+            return redirect(url_for('seleccionar_reporte'))
+    except mysql.connector.Error as e:
+        flash(f"Error al cargar el reporte: {e}", "error")
+        return redirect(url_for('seleccionar_reporte'))
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals() and conn.is_connected():
+            conn.close()
+
+@app.route('/reportes/pdf/<tipo>')
+def descargar_reporte_pdf(tipo):
+    if 'rol' not in session:
+        flash("Debes iniciar sesión para ver reportes", "error")
+        return redirect(url_for('index'))
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        if tipo == 'citas':
+            cursor.execute("""
+                SELECT c.fecha, p.nombre AS paciente, p.telefono, p.fecha_nacimiento, c.observaciones
+                FROM citas c
+                JOIN pacientes p ON c.paciente_id = p.id
+                ORDER BY c.fecha DESC
+            """)
+            datos = cursor.fetchall()
+            rendered = render_template('Reportes/reporte_citas.html', citas=datos)
+        elif tipo == 'tratamientos':
+            cursor.execute("""
+                SELECT t.fecha_registro, p.nombre AS paciente, t.diagnostico, t.tratamiento_aplicado, t.observaciones
+                FROM tratamientos t
+                JOIN citas c ON t.cita_id = c.id
+                JOIN pacientes p ON c.paciente_id = p.id
+                ORDER BY t.fecha_registro DESC
+            """)
+            datos = cursor.fetchall()
+            rendered = render_template('Reportes/reporte_tratamientos.html', tratamientos=datos)
+        else:
+            flash("Tipo de reporte no válido", "error")
+            return redirect(url_for('seleccionar_reporte'))
+        
+        # Convertir el HTML renderizado en PDF
+        pdf = io.BytesIO()
+        pisa_status = pisa.CreatePDF(io.StringIO(rendered), dest=pdf)
+        if pisa_status.err:
+            flash("Error generando PDF", "error")
+            return redirect(url_for('seleccionar_reporte'))
+        pdf.seek(0)
+        response = make_response(pdf.read())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename="{tipo}_reporte.pdf"'
+        return response
+    except mysql.connector.Error as e:
+        flash(f"Error al descargar el reporte: {e}", "error")
+        return redirect(url_for('seleccionar_reporte'))
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals() and conn.is_connected():
+            conn.close()
+
+@app.route('/panel/reportes')
+def ver_opcion_reportes():
+    if session.get('rol') in ['administrador', 'doctor']:
+        return redirect(url_for('seleccionar_reporte'))
+    flash('Acceso restringido a usuarios con permisos.', 'error')
+    return redirect(url_for('index'))
+
 @app.route('/login_admin', methods=['GET', 'POST'])
 def login_admin():
     if request.method == 'POST':
         correo = request.form['correo']
         password = request.form['password']
-
         try:
             conn = get_connection()
             cursor = conn.cursor(dictionary=True)
-            # Buscar en usuarios donde rol sea 'administrador'
             cursor.execute("SELECT * FROM usuarios WHERE correo = %s AND rol = 'administrador'", (correo,))
             admin = cursor.fetchone()
-
             if admin and bcrypt.checkpw(password.encode('utf-8'), admin['contraseña'].encode('utf-8')):
                 session['rol'] = 'administrador'
                 session['nombre'] = admin['nombre']
@@ -43,9 +154,10 @@ def login_admin():
         except mysql.connector.Error as e:
             flash(f'Error al conectar con la base de datos: {e}', 'error')
         finally:
-            if 'cursor' in locals(): cursor.close()
-            if 'conn' in locals() and conn.is_connected(): conn.close()
-
+            if 'cursor' in locals():
+                cursor.close()
+            if 'conn' in locals() and conn.is_connected():
+                conn.close()
     return render_template('Administrador/login_administrador.html')
 
 @app.route('/login/dentista', methods=['GET', 'POST'])
@@ -53,14 +165,11 @@ def login_doctor():
     if request.method == 'POST':
         correo = request.form['correo']
         password = request.form['password']
-
         try:
             conn = get_connection()
             cursor = conn.cursor(dictionary=True)
-            # Buscar en usuarios donde el rol sea 'doctor'
             cursor.execute("SELECT * FROM usuarios WHERE correo = %s AND rol = 'doctor'", (correo,))
             doctor = cursor.fetchone()
-
             if doctor and bcrypt.checkpw(password.encode('utf-8'), doctor['contraseña'].encode('utf-8')):
                 session['rol'] = 'doctor'
                 session['nombre'] = doctor['nombre']
@@ -68,14 +177,13 @@ def login_doctor():
                 return redirect(url_for('panel_doctor')) 
             else:
                 flash('Correo o contraseña incorrectos', 'error')
-
         except mysql.connector.Error as e:
             flash(f'Error al conectar con la base de datos: {e}', 'error')
-
         finally:
-            if 'cursor' in locals(): cursor.close()
-            if 'conn' in locals() and conn.is_connected(): conn.close()
-
+            if 'cursor' in locals():
+                cursor.close()
+            if 'conn' in locals() and conn.is_connected():
+                conn.close()
     return render_template('Dentista/login_dentista.html')
 
 @app.route('/panel/administrador')
@@ -97,12 +205,10 @@ def registrar_tratamiento(cita_id):
     if session.get('rol') != 'doctor':
         flash('Acceso restringido a doctores.', 'error')
         return redirect(url_for('index'))
-
     if request.method == 'POST':
         diagnostico = request.form['diagnostico']
         tratamiento = request.form['tratamiento']
         observaciones = request.form['observaciones']
-
         try:
             conn = get_connection()
             cursor = conn.cursor()
@@ -117,11 +223,87 @@ def registrar_tratamiento(cita_id):
         except mysql.connector.Error as e:
             flash(f'❌ Error al registrar tratamiento: {e}', 'error')
         finally:
-            if 'cursor' in locals(): cursor.close()
-            if 'conn' in locals() and conn.is_connected(): conn.close()
-
+            if 'cursor' in locals():
+                cursor.close()
+            if 'conn' in locals() and conn.is_connected():
+                conn.close()
     return render_template('Dentista/registrar_tratamiento.html', cita_id=cita_id)
 
+@app.route('/citas/registrar', methods=['GET', 'POST'])
+def registrar_cita():
+    if session.get('rol') != 'doctor':
+        flash('Acceso restringido. Solo los doctores pueden registrar citas.', 'error')
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        paciente_nombre = request.form.get('paciente')
+        paciente_telefono = request.form.get('telefono')
+        paciente_fecha_nac = request.form.get('fecha_nacimiento')
+        fecha = request.form.get('fecha')
+        hora = request.form.get('hora')
+        observaciones = request.form.get('descripcion')
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM pacientes WHERE nombre = %s AND telefono = %s", (paciente_nombre, paciente_telefono))
+            paciente = cursor.fetchone()
+            if paciente:
+                paciente_id = paciente[0]
+            else:
+                cursor.execute(
+                    "INSERT INTO pacientes (nombre, telefono, fecha_nacimiento) VALUES (%s, %s, %s)",
+                    (paciente_nombre, paciente_telefono, paciente_fecha_nac)
+                )
+                paciente_id = cursor.lastrowid
+            cursor.execute("SELECT id FROM doctores WHERE usuario_id = %s", (session['usuario_id'],))
+            doctor = cursor.fetchone()
+            if not doctor:
+                flash("❌ No se encontró el ID del doctor.", "error")
+                return redirect(url_for('panel_doctor'))
+            doctor_id = doctor[0]
+            fecha_completa = f"{fecha} {hora}"
+            cursor.execute(
+                "INSERT INTO citas (doctor_id, paciente_id, fecha, observaciones) VALUES (%s, %s, %s, %s)",
+                (doctor_id, paciente_id, fecha_completa, observaciones)
+            )
+            conn.commit()
+            flash("✅ Cita registrada correctamente.", "success")
+            return redirect(url_for('panel_doctor'))
+        except mysql.connector.Error as e:
+            flash(f"❌ Error al registrar la cita: {e}", "error")
+        finally:
+            if 'cursor' in locals():
+                cursor.close()
+            if 'conn' in locals() and conn.is_connected():
+                conn.close()
+    return render_template('Dentista/registrar_cita.html')
+
+@app.route('/citas/mis_citas')
+def ver_citas():
+    if session.get('rol') != 'doctor':
+        flash('Acceso restringido. Solo los doctores pueden ver sus citas.', 'error')
+        return redirect(url_for('index'))
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT c.id, c.fecha, p.nombre AS paciente, p.telefono, p.fecha_nacimiento, c.observaciones
+            FROM citas c
+            JOIN pacientes p ON c.paciente_id = p.id
+            JOIN doctores d ON c.doctor_id = d.id
+            WHERE d.usuario_id = %s
+            ORDER BY c.fecha
+        """
+        cursor.execute(query, (session['usuario_id'],))
+        citas = cursor.fetchall()
+    except mysql.connector.Error as e:
+        flash(f'❌ Error al cargar citas: {e}', 'error')
+        citas = []
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals() and conn.is_connected():
+            conn.close()
+    return render_template('Dentista/mis_citas.html', citas=citas)
 
 @app.route('/logout')
 def logout():

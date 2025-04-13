@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+{% block title %}Generar Reporte{% endblock %}
+
+{% block content %}
+<style>
+    .report-form {
+        max-width: 500px;
+        margin: 2rem auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .report-form h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #1e3a8a;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    select, button {
+        width: 100%;
+        padding: 0.6rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .submit-btn {
+        margin-top: 1.5rem;
+        background-color: #2563eb;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        background-color: #1d4ed8;
+    }
+
+    .back-link {
+        display: block;
+        margin-top: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #4b5563;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="report-form">
+    <h2>📊 Generar Reporte</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="tipo_reporte">Tipo de reporte:</label>
+            <select id="tipo_reporte" name="tipo_reporte" required>
+                <option value="">-- Selecciona una opción --</option>
+                <option value="citas">Citas</option>
+                <option value="tratamientos">Tratamientos</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="formato">Formato:</label>
+            <select id="formato" name="formato" required>
+                <option value="">-- Selecciona una opción --</option>
+                <option value="pantalla">Ver en pantalla</option>
+                <option value="pdf">Descargar PDF</option>
+            </select>
+        </div>
+
+        <button type="submit" class="submit-btn">Generar</button>
+    </form>
+
+    <a class="back-link" href="{{ url_for('panel_admin') if session['rol'] == 'administrador' else url_for('panel_doctor') }}">← Volver al panel</a>
+</div>
+{% endblock %}
