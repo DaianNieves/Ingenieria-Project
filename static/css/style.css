@@ -350,6 +350,41 @@ body {
     color: #888;
 }
 
+/* ----------------- Botones de acción ----------------- */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.btn-action.edit {
+    background-color: #f9a825;
+}
+
+.btn-action.edit:hover {
+    background-color: #f57f17;
+}
+
+.btn-action.delete {
+    background-color: #e53935;
+}
+
+.btn-action.delete:hover {
+    background-color: #c62828;
+}
+
+
+
 /* ----------------- Footer ----------------- */
 footer {
     background-color: #e0f7fa;

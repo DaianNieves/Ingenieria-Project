@@ -148,6 +148,47 @@ def panel_admin_doc():
 
     return render_template('Administrador/panel_admin_doc.html', doctores=doctores)
 
+#Para edición y eliminación de doctores
+@app.route('/editar_doctor/<int:id>')
+def editar_doctor(id):
+    # lógica para editar
+    ...
+
+@app.route('/eliminar_doctor/<int:id>', methods=['POST'])
+def eliminar_doctor(id):
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Solo los administradores pueden eliminar doctores.', 'error')
+        return redirect(url_for('panel_admin'))
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # 1. Obtener el usuario_id del doctor
+        cursor.execute("SELECT usuario_id FROM doctores WHERE id = %s", (id,))
+        result = cursor.fetchone()
+
+        if not result:
+            flash('❌ Doctor no encontrado.', 'error')
+            return redirect(url_for('panel_admin_doc'))
+
+        usuario_id = result[0]
+
+        # 2. Eliminar al usuario (esto eliminará automáticamente al doctor por ON DELETE CASCADE)
+        cursor.execute("DELETE FROM usuarios WHERE id = %s", (usuario_id,))
+        conn.commit()
+
+        flash('✅ Doctor eliminado correctamente.', 'success')
+
+    except mysql.connector.Error as e:
+        flash(f'❌ Error al eliminar doctor: {e}', 'error')
+
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        if 'conn' in locals() and conn.is_connected(): conn.close()
+
+    return redirect(url_for('panel_admin_doc'))
+
 
 @app.route('/logout')
 def logout():

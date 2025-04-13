@@ -18,6 +18,7 @@
                     <th>Especialidad</th>
                     <th>Teléfono</th>
                     <th>Fecha de Registro</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,6 +29,13 @@
                     <td>{{ doctor.especialidad }}</td>
                     <td>{{ doctor.telefono or '—' }}</td>
                     <td>{{ doctor.fecha_registro.strftime('%d/%m/%Y') }}</td>
+                    <td class="action-buttons">
+                        <a href="{{ url_for('editar_doctor', id=doctor.id) }}" class="btn-action edit">🖊️ Editar</a>
+                        <!-- Formulario para eliminar -->
+                        <form action="{{ url_for('eliminar_doctor', id=doctor.id) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este doctor?');">🗑️ Eliminar</button>
+                        </form>
+                    </td>                    
                 </tr>
                 {% endfor %}
             </tbody>
