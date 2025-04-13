@@ -22,6 +22,7 @@ def get_connection():
 def index():
     return render_template('index.html')
 
+# Módulo Reportes: Seleccionar y ver/descargar reportes en pantalla o PDF.
 @app.route('/reportes', methods=['GET', 'POST'])
 def seleccionar_reporte():
     if 'rol' not in session:
@@ -107,7 +108,6 @@ def descargar_reporte_pdf(tipo):
             flash("Tipo de reporte no válido", "error")
             return redirect(url_for('seleccionar_reporte'))
         
-        # Convertir el HTML renderizado en PDF
         pdf = io.BytesIO()
         pisa_status = pisa.CreatePDF(io.StringIO(rendered), dest=pdf)
         if pisa_status.err:
@@ -134,6 +134,7 @@ def ver_opcion_reportes():
     flash('Acceso restringido a usuarios con permisos.', 'error')
     return redirect(url_for('index'))
 
+# Rutas de Login
 @app.route('/login_admin', methods=['GET', 'POST'])
 def login_admin():
     if request.method == 'POST':
@@ -186,6 +187,7 @@ def login_doctor():
                 conn.close()
     return render_template('Dentista/login_dentista.html')
 
+# Paneles
 @app.route('/panel/administrador')
 def panel_admin():
     if session.get('rol') != 'administrador':
@@ -200,6 +202,68 @@ def panel_doctor():
         return redirect(url_for('login_doctor'))
     return render_template('Dentista/panel_dentista.html')
 
+# Rutas de administración de doctores (solo para administradores)
+@app.route('/panel/administrador/doctores')
+def panel_admin_doc():
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Inicia sesión como administrador.', 'error')
+        return redirect(url_for('login_admin'))
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT d.id, u.nombre, u.correo, d.especialidad, d.telefono, d.fecha_registro
+            FROM doctores d
+            JOIN usuarios u ON d.usuario_id = u.id
+            WHERE u.rol = 'doctor'
+        """
+        cursor.execute(query)
+        doctores = cursor.fetchall()
+    except mysql.connector.Error as e:
+        flash(f'Error al obtener doctores: {e}', 'error')
+        doctores = []
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals() and conn.is_connected():
+            conn.close()
+    return render_template('Administrador/panel_admin_doc.html', doctores=doctores)
+
+# Para edición y eliminación de doctores
+@app.route('/editar_doctor/<int:id>')
+def editar_doctor(id):
+    # Lógica para editar (completar según necesidad)
+    return "Funcionalidad de editar doctor en desarrollo..."
+
+@app.route('/eliminar_doctor/<int:id>', methods=['POST'])
+def eliminar_doctor(id):
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Solo los administradores pueden eliminar doctores.', 'error')
+        return redirect(url_for('panel_admin'))
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        # Obtener el usuario_id del doctor
+        cursor.execute("SELECT usuario_id FROM doctores WHERE id = %s", (id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('❌ Doctor no encontrado.', 'error')
+            return redirect(url_for('panel_admin_doc'))
+        usuario_id = result[0]
+        # Eliminar el usuario (se eliminará el doctor por ON DELETE CASCADE)
+        cursor.execute("DELETE FROM usuarios WHERE id = %s", (usuario_id,))
+        conn.commit()
+        flash('✅ Doctor eliminado correctamente.', 'success')
+    except mysql.connector.Error as e:
+        flash(f'❌ Error al eliminar doctor: {e}', 'error')
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals() and conn.is_connected():
+            conn.close()
+    return redirect(url_for('panel_admin_doc'))
+
+# Rutas para citas y tratamientos
 @app.route('/tratamientos/registrar/<int:cita_id>', methods=['GET', 'POST'])
 def registrar_tratamiento(cita_id):
     if session.get('rol') != 'doctor':
