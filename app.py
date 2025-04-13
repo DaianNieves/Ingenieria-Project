@@ -277,10 +277,53 @@ def registrar_doctor():
 
     return render_template('Administrador/registrar_doctor.html')
 
-@app.route('/editar_doctor/<int:id>')
+@app.route('/editar_doctor/<int:id>', methods=['POST'])
 def editar_doctor(id):
-    # Lógica para editar (completar según necesidad)
-    return "Funcionalidad de editar doctor en desarrollo..."
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Solo los administradores pueden editar doctores.', 'error')
+        return redirect(url_for('panel_admin_doc'))
+
+    nombre = request.form['nombre']
+    correo = request.form['correo']
+    especialidad = request.form['especialidad']
+    telefono = request.form['telefono']
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # Obtener el usuario_id correspondiente al doctor
+        cursor.execute("SELECT usuario_id FROM doctores WHERE id = %s", (id,))
+        result = cursor.fetchone()
+
+        if not result:
+            flash('❌ Doctor no encontrado.', 'error')
+            return redirect(url_for('panel_admin_doc'))
+
+        usuario_id = result[0]
+
+        # Actualizar usuarios
+        cursor.execute("""
+            UPDATE usuarios SET nombre = %s, correo = %s WHERE id = %s
+        """, (nombre, correo, usuario_id))
+
+        # Actualizar doctores
+        cursor.execute("""
+            UPDATE doctores SET especialidad = %s, telefono = %s WHERE id = %s
+        """, (especialidad, telefono, id))
+
+        conn.commit()
+        flash('✅ Doctor actualizado correctamente.', 'success')
+
+    except mysql.connector.Error as e:
+        flash(f'❌ Error al actualizar doctor: {e}', 'error')
+
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        if 'conn' in locals() and conn.is_connected(): conn.close()
+
+    return redirect(url_for('panel_admin_doc'))
+
 
 @app.route('/eliminar_doctor/<int:id>', methods=['POST'])
 def eliminar_doctor(id):

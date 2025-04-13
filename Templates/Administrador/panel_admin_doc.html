@@ -6,10 +6,6 @@
     <div class="admin-header">
         <h2>👨‍⚕️ Panel de Doctores</h2>
         <p>Listado de doctores registrados en el sistema.</p>
-
-        <div style="text-align: right; margin-top: 10px;">
-            <a href="{{ url_for('registrar_doctor') }}" class="btn btn-primary">➕ Registrar Doctor</a>
-        </div>
     </div>
 
     {% if doctores %}
@@ -34,7 +30,7 @@
                     <td>{{ doctor.telefono or '—' }}</td>
                     <td>{{ doctor.fecha_registro.strftime('%d/%m/%Y') }}</td>
                     <td class="action-buttons">
-                        <a href="{{ url_for('editar_doctor', id=doctor.id) }}" class="btn-action edit">🖊️ Editar</a>
+                        <button class="btn-action edit" onclick="openEditModal('{{ doctor.id }}', '{{ doctor.nombre }}', '{{ doctor.correo }}', '{{ doctor.especialidad }}', '{{ doctor.telefono }}')">🖊️ Editar</button>                        <!-- Formulario para eliminar -->
                         <form action="{{ url_for('eliminar_doctor', id=doctor.id) }}" method="POST" style="display: inline;">
                             <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este doctor?');">🗑️ Eliminar</button>
                         </form>
@@ -52,4 +48,44 @@
         <a class="dashboard-card back-link" href="{{ url_for('panel_admin') }}">⬅️ Volver al Panel</a>
     </div>
 </div>
+
+<!-- Modal para editar doctor -->
+<!-- Modal para editar doctor -->
+<div id="editDoctorModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeEditModal()">&times;</span>
+        <h2>Editar Doctor</h2>
+        <form id="editDoctorForm" method="POST">
+            <input type="hidden" id="doctorId" name="doctorId">
+
+            <div class="input-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div class="input-group">
+                <label for="correo">Correo</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+
+            <div class="input-group">
+                <label for="especialidad">Especialidad</label>
+                <input type="text" id="especialidad" name="especialidad" required>
+            </div>
+
+            <div class="input-group">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono" name="telefono" required>
+            </div>
+
+            <div class="submit-button">
+                <button type="submit">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/functions.js') }}"></script>
+
 {% endblock %}
