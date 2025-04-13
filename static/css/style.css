@@ -218,6 +218,138 @@ body {
     color: #555;
 }
 
+/* ----------------- Panel del administrador ----------------- */
+.admin-dashboard-container {
+    max-width: 960px;
+    margin: 2rem auto;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 12px 24px rgba(0, 128, 128, 0.15);
+    text-align: center;
+}
+
+.admin-welcome h2 {
+    color: #0077b6;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.admin-welcome p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: #555;
+}
+
+.dashboard-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.dashboard-card {
+    background: linear-gradient(135deg, #00b4d8, #0077b6);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 6px 12px rgba(0, 119, 182, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 1.1rem;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 119, 182, 0.3);
+}
+
+.dashboard-card.logout {
+    background: linear-gradient(135deg, #f44336, #e53935);
+}
+
+.dashboard-card.logout:hover {
+    box-shadow: 0 10px 20px rgba(244, 67, 54, 0.3);
+}
+
+/* ----------------- Tabla de doctores ----------------- */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 2rem;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 6px 12px rgba(0, 128, 128, 0.1);
+}
+
+.styled-table thead {
+    background-color: #0077b6;
+    color: white;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid #e0f0f5;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #f1faff;
+    transition: background 0.3s ease;
+}
+
+/* ----------------- Encabezado ----------------- */
+.admin-header h2 {
+    color: #0077b6;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.admin-header p {
+    font-size: 1.1rem;
+    color: #555;
+    text-align: center;
+}
+
+/* ----------------- Enlace de regreso ----------------- */
+.back-link-container {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.back-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #00b4d8, #0077b6);
+    color: white;
+    padding: 0.8rem 1.6rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 6px 12px rgba(0, 119, 182, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.back-link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 119, 182, 0.3);
+}
+
+/* ----------------- Mensaje vacío ----------------- */
+.empty-message {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 1.2rem;
+    color: #888;
+}
+
 /* ----------------- Footer ----------------- */
 footer {
     background-color: #e0f7fa;
