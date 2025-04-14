@@ -1,44 +1,42 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Registrar Doctor</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h2>Registrar nuevo doctor</h2>
+{% extends 'layout.html' %}
+
+{% block title %}Registrar Doctor{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 100vh; padding: 1rem;">
+    <div class="login-container">
+        <h2 class="login-title">Registrar nuevo doctor</h2>
         <form method="POST" action="{{ url_for('registrar_doctor') }}">
-            <div class="form-group">
+            <div class="input-group">
                 <label for="nombre">Nombre completo:</label>
                 <input type="text" id="nombre" name="nombre" required>
             </div>
-
-            <div class="form-group">
+    
+            <div class="input-group">
                 <label for="correo">Correo electrónico:</label>
                 <input type="email" id="correo" name="correo" required>
             </div>
-
-            <div class="form-group">
+    
+            <div class="input-group">
                 <label for="contraseña">Contraseña:</label>
                 <input type="password" id="contraseña" name="contraseña" required>
             </div>
-
-            <div class="form-group">
+    
+            <div class="input-group">
                 <label for="especialidad">Especialidad:</label>
                 <input type="text" id="especialidad" name="especialidad" required>
             </div>
-
-            <div class="form-group">
+    
+            <div class="input-group">
                 <label for="telefono">Teléfono:</label>
                 <input type="text" id="telefono" name="telefono" required>
             </div>
-
-            <div class="form-group">
-                <button type="submit">Registrar</button>
-                <a href="{{ url_for('panel_admin_doc') }}">Cancelar</a>
+    
+            <div class="submit-button">
+                <button type="submit" class="back-button">Registrar</button>
+                <a href="{{ url_for('panel_admin_doc') }}" class="back-button btn-cancelar">Cancelar</a>
             </div>
         </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
