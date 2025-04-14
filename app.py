@@ -508,6 +508,74 @@ def eliminar_doctor(id):
             conn.close()
     return redirect(url_for('panel_admin_doc'))
 
+# Rutas para editar y eliminar pacientes
+@app.route('/editar_paciente/<int:id>', methods=['POST'])
+def editar_paciente(id):
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Solo los administradores pueden editar pacientes.', 'error')
+        return redirect(url_for('ver_pacientes'))
+
+    nombre = request.form['nombre']
+    telefono = request.form.get('telefono')
+    fecha_nacimiento = request.form.get('fecha_nacimiento') or None
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id FROM pacientes WHERE id = %s", (id,))
+        if not cursor.fetchone():
+            flash('❌ Paciente no encontrado.', 'error')
+            return redirect(url_for('ver_pacientes'))
+
+        cursor.execute("""
+            UPDATE pacientes
+            SET nombre = %s, telefono = %s, fecha_nacimiento = %s
+            WHERE id = %s
+        """, (nombre, telefono, fecha_nacimiento, id))
+
+        conn.commit()
+        flash('✅ Paciente actualizado correctamente.', 'success')
+
+    except mysql.connector.Error as e:
+        flash(f'❌ Error al actualizar paciente: {e}', 'error')
+
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        if 'conn' in locals() and conn.is_connected(): conn.close()
+
+    return redirect(url_for('ver_pacientes'))
+
+@app.route('/eliminar_paciente/<int:id>', methods=['POST'])
+def eliminar_paciente(id):
+    if session.get('rol') != 'administrador':
+        flash('Acceso denegado. Solo los administradores pueden eliminar pacientes.', 'error')
+        return redirect(url_for('ver_pacientes'))
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id FROM pacientes WHERE id = %s", (id,))
+        if not cursor.fetchone():
+            flash('❌ Paciente no encontrado.', 'error')
+            return redirect(url_for('ver_pacientes'))
+
+        cursor.execute("DELETE FROM pacientes WHERE id = %s", (id,))
+        conn.commit()
+
+        flash('✅ Paciente eliminado correctamente.', 'success')
+
+    except mysql.connector.Error as e:
+        flash(f'❌ Error al eliminar paciente: {e}', 'error')
+
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        if 'conn' in locals() and conn.is_connected(): conn.close()
+
+    return redirect(url_for('ver_pacientes'))
+
+
 # Rutas para citas y tratamientos
 @app.route('/tratamientos/registrar_directo', methods=['GET', 'POST'])
 def registrar_tratamiento_directo():
