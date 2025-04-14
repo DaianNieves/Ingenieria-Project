@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+{% block title %}Reporte de Citas{% endblock %}
+
+{% block content %}
+<style>
+    .reporte-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .reporte-container h2 {
+        text-align: center;
+        color: #1e3a8a;
+        margin-bottom: 2rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+    }
+
+    th, td {
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    th {
+        background-color: #2563eb;
+        color: white;
+    }
+
+    tr:hover {
+        background-color: #f1f5f9;
+    }
+
+    .btn-volver {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        background-color: #ef4444;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .btn-volver:hover {
+        background-color: #dc2626;
+    }
+</style>
+
+<div class="reporte-container">
+    <h2>🗓️ Reporte de Citas Agendadas</h2>
+
+    {% if citas %}
+    <table>
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Teléfono</th>
+                <th>Doctor</th>
+                <th>Fecha y Hora</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cita in citas %}
+            <tr>
+                <td>{{ cita.paciente }}</td>
+                <td>{{ cita.telefono }}</td>
+                <td>{{ cita.doctor }}</td>
+                <td>{{ cita.fecha }}</td>
+                <td>{{ cita.observaciones or "Sin observaciones" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No hay citas registradas.</p>
+    {% endif %}
+
+    <a href="{{ url_for('panel_admin') }}" class="btn-volver">← Volver al Panel</a>
+</div>
+{% endblock %}
