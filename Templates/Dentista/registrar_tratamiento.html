@@ -89,6 +89,25 @@
 <div class="form-wrapper">
     <div class="treatment-form-container">
         <h2>🦷 Registrar Tratamiento</h2>
+        {% if paciente %}
+    <p style="text-align: center; font-weight: bold; color: #1e3a8a;">
+        Tratamiento para: {{ paciente.nombre }}
+    </p>
+{% elif pacientes %}
+    <div class="input-group">
+        <label for="paciente_id">Seleccionar Paciente</label>
+        <select name="paciente_id" id="paciente_id" required>
+            <option value="">-- Selecciona un paciente --</option>
+            {% for paciente in pacientes %}
+                <option value="{{ paciente.id }}">{{ paciente.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+{% endif %}
+
+
+
+
         <form method="POST">
             <div class="input-group">
                 <label for="diagnostico">Diagnóstico</label>
