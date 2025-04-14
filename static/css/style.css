@@ -88,7 +88,6 @@ body {
     background-color: #27ae60;
 }
 
-
 /* ----------------- Links ----------------- */
 .back-button,
 .forgot-password {
@@ -504,6 +503,24 @@ body {
         width: 100%;
         padding: 10px;
     }
+}
+
+/* Estilo para el botón "Cancelar" */
+.btn-cancelar {
+    display: inline-block;
+    background-color: #e74c3c; /* Rojo */
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-left: 1rem; /* Separación con el botón "Registrar" */
+    transition: background-color 0.3s ease;
+}
+
+.btn-cancelar:hover {
+    background-color: #c0392b; /* Rojo oscuro al pasar el ratón */
 }
 
 /* ----------------- Footer ----------------- */

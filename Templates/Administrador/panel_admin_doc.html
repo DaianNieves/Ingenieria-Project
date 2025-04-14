@@ -6,6 +6,9 @@
     <div class="admin-header">
         <h2>👨‍⚕️ Panel de Doctores</h2>
         <p>Listado de doctores registrados en el sistema.</p>
+        <div style="text-align: right; margin-top: 10px;">
+            <a href="{{ url_for('registrar_doctor') }}" class="btn btn-primary">➕ Registrar Doctor</a>
+        </div>
     </div>
 
     {% if doctores %}
@@ -49,7 +52,6 @@
     </div>
 </div>
 
-<!-- Modal para editar doctor -->
 <!-- Modal para editar doctor -->
 <div id="editDoctorModal" class="modal">
     <div class="modal-content">
