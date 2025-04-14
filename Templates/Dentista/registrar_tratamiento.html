@@ -8,24 +8,32 @@
         justify-content: center;
         align-items: center;
         min-height: calc(100vh - 100px);
-        background-color: #f9fafb;
+       
     }
 
     .treatment-form-container {
         background-color: #ffffff;
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 2rem 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         width: 100%;
-        max-width: 480px;
+        max-width: 520px;
     }
 
     .treatment-form-container h2 {
         text-align: center;
-        margin-bottom: 1.2rem;
+        margin-bottom: 0.5rem;
         color: #1e3a8a;
-        font-size: 1.3rem;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .treatment-form-container .paciente-info {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #1e40af;
         font-weight: 600;
+        margin-bottom: 1.5rem;
     }
 
     .treatment-form-container label {
@@ -38,18 +46,25 @@
     .treatment-form-container select,
     .treatment-form-container textarea {
         width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
+        padding: 0.6rem;
+        margin-bottom: 1.3rem;
         border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        font-size: 0.95rem;
+        border-radius: 10px;
+        font-size: 1rem;
         background-color: #f8fafc;
+        transition: border-color 0.2s ease;
+    }
+
+    .treatment-form-container select:focus,
+    .treatment-form-container textarea:focus {
+        border-color: #3b82f6;
+        outline: none;
     }
 
     textarea {
         resize: vertical;
-        min-height: 70px;
-        max-height: 120px;
+        min-height: 80px;
+        max-height: 140px;
     }
 
     .submit-button,
@@ -61,10 +76,11 @@
     .submit-button button {
         background-color: #1d4ed8;
         color: white;
-        padding: 0.5rem 1.5rem;
+        padding: 0.75rem 2rem;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 1rem;
+        font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
@@ -75,20 +91,53 @@
 
     .back-button a {
         display: inline-block;
-        margin-top: 0.5rem;
+        margin-top: 1rem;
         color: #475569;
         text-decoration: none;
         font-size: 0.9rem;
+        font-weight: 500;
     }
 
     .back-button a:hover {
         text-decoration: underline;
+        color: #1d4ed8;
     }
+    .dashboard-links .cerrar-sesion {
+        background: linear-gradient(to right, #ef4444, #dc2626);
+        color: white !important;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .dashboard-links .cerrar-sesion:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 12px rgba(239, 68, 68, 0.4);
+    }
+    
 </style>
 
 <div class="form-wrapper">
     <div class="treatment-form-container">
         <h2>🦷 Registrar Tratamiento</h2>
+
+        {% if paciente is defined and paciente %}
+        <div class="paciente-info">
+            😷 <span class="paciente-nombre">Tratamiento para:</span>
+            <span class="nombre-resaltado">{{ paciente.nombre }}</span>
+        </div>
+        
+        {% elif pacientes is defined and pacientes %}
+            <div class="input-group">
+                <label for="paciente_id">Seleccionar Paciente</label>
+                <select name="paciente_id" id="paciente_id" required>
+                    <option value="">-- Selecciona un paciente --</option>
+                    {% for p in pacientes %}
+                        <option value="{{ p.id }}">{{ p.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+
         <form method="POST">
             <div class="input-group">
                 <label for="diagnostico">Diagnóstico</label>
