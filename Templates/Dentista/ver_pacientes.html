@@ -1,0 +1,110 @@
+{% extends 'layout.html' %}
+{% block title %}Mis Pacientes{% endblock %}
+
+{% block content %}
+<style>
+    .pacientes-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .pacientes-container h2 {
+        text-align: center;
+        color: #1d4ed8;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+
+    .pacientes-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .pacientes-table th,
+    .pacientes-table td {
+        padding: 0.8rem;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .pacientes-table th {
+        background-color: #f1f5f9;
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .pacientes-table tr:hover {
+        background-color: #f0f9ff;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 2rem;
+        text-decoration: none;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    .volver-panel {
+        text-align: center;
+        margin-top: 2rem;
+    }
+    
+    .volver-panel a {
+        display: inline-block;
+        background: linear-gradient(to right, #06b6d4, #0284c7);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+    
+    .volver-panel a:hover {
+        background: linear-gradient(to right, #0ea5e9, #0369a1);
+        transform: scale(1.03);
+    }
+    
+</style>
+
+<div class="pacientes-container">
+    <h2>👥 Pacientes Asignados</h2>
+
+    {% if pacientes %}
+    <table class="pacientes-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Fecha de Nacimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{ paciente.nombre }}</td>
+                <td>{{ paciente.telefono or '—' }}</td>
+                <td>{{ paciente.fecha_nacimiento or '—' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p style="text-align: center; color: #6b7280;">No tienes pacientes registrados.</p>
+    {% endif %}
+
+    <div class="volver-panel">
+        <a href="{{ url_for('panel_doctor') }}">← Volver al Panel</a>
+    </div>
+    
+{% endblock %}

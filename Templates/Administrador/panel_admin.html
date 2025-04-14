@@ -2,6 +2,62 @@
 {% block title %}Panel del Administrador{% endblock %}
 
 {% block content %}
+<style>
+    .admin-dashboard-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 2.5rem;
+        background-color: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .admin-welcome h2 {
+        font-size: 2rem;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-welcome p {
+        color: #4b5563;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-links {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .dashboard-card {
+        display: block;
+        padding: 1rem;
+        background: linear-gradient(to right, #3b82f6, #2563eb);
+        color: white;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    .dashboard-card.logout {
+        background: linear-gradient(to right, #ef4444, #dc2626);
+        color: white;
+    }
+
+    .dashboard-card.logout:hover {
+        box-shadow: 0 6px 15px rgba(239, 68, 68, 0.5);
+    }
+</style>
+
 <div class="admin-dashboard-container">
     <div class="admin-welcome">
         <h2>👋 Bienvenido, {{ session['nombre'] }}</h2>
@@ -10,8 +66,8 @@
 
     <div class="dashboard-links">
         <a href="{{ url_for('panel_admin_doc') }}" class="dashboard-card">📋 Ver Doctores</a>
-        <a href="#" class="dashboard-card">🗓️ Ver Citas</a>
-        <a href="#" class="dashboard-card">📈 Reportes</a>
+        <a href="{{ url_for('ver_reporte', tipo='citas') }}" class="dashboard-card">🗓️ Ver Citas</a>
+        <a href="{{ url_for('ver_opcion_reportes') }}" class="dashboard-card">📈 Ver Reportes</a>
         <a href="{{ url_for('logout') }}" class="dashboard-card logout">🚪 Cerrar Sesión</a>
     </div>
 </div>

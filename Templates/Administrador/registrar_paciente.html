@@ -1,0 +1,151 @@
+{% extends 'layout.html' %}
+{% block title %}Registrar Paciente{% endblock %}
+
+{% block content %}
+<style>
+    .form-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 100px);
+        background-color: #f9fafb;
+        position: relative;
+    }
+
+    .volver-panel {
+        position: absolute;
+        top: 40px;
+        left: 40px;
+    }
+
+    .volver-panel a {
+        display: inline-block;
+        background-color: #e0e7ff;
+        color: #1e3a8a;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .volver-panel a:hover {
+        background-color: #c7d2fe;
+        color: #1d4ed8;
+    }
+
+    .form-container {
+        background-color: #ffffff;
+        padding: 2rem 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        max-width: 480px;
+        width: 100%;
+    }
+
+    .form-container h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1e40af;
+    }
+
+    .form-container label {
+        display: block;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.3rem;
+        margin-top: 1rem;
+    }
+
+    .form-container input,
+    .form-container select {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background-color: #f8fafc;
+        font-size: 1rem;
+    }
+
+    .form-container input:focus,
+    .form-container select:focus {
+        outline: none;
+        border-color: #3b82f6;
+    }
+
+    .form-container .submit-button {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .form-container .submit-button button,
+    .form-container .submit-button a {
+        flex: 1;
+        padding: 0.75rem;
+        text-align: center;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .form-container .submit-button button {
+        background-color: #1d4ed8;
+        color: white;
+        border: none;
+    }
+
+    .form-container .submit-button button:hover {
+        background-color: #2563eb;
+    }
+
+    .form-container .submit-button .btn-cancelar {
+        background-color: #e5e7eb;
+        color: #1f2937;
+        border: 1px solid #d1d5db;
+    }
+
+    .form-container .submit-button .btn-cancelar:hover {
+        background-color: #f3f4f6;
+    }
+</style>
+
+<div class="form-wrapper">
+    <div class="volver-panel">
+        <a href="{{ url_for('panel_admin') }}">← Volver al Panel</a>
+    </div>
+
+    <div class="form-container">
+        <h2>➕ Registrar Paciente</h2>
+        <form method="POST">
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" id="nombre" required>
+
+            <label for="telefono">Teléfono:</label>
+            <input type="text" name="telefono" id="telefono">
+
+            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
+
+            <label for="doctor_id">Asignar a Doctor:</label>
+            <select name="doctor_id" id="doctor_id" required>
+                <option value="">-- Selecciona un doctor --</option>
+                {% for doctor in doctores %}
+                    <option value="{{ doctor.id }}">{{ doctor.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="submit-button">
+                <button type="submit">Guardar</button>
+                <a href="{{ url_for('panel_admin_doc') }}" class="btn-cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

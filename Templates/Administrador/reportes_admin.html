@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+{% block title %}Reportes Administrador{% endblock %}
+
+{% block content %}
+<style>
+    .admin-reportes-container {
+        max-width: 750px;
+        margin: 3rem auto;
+        padding: 2.5rem;
+        background-color: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .admin-reportes-container h2 {
+        font-size: 2.1rem;
+        color: #1e3a8a;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-reportes-container p {
+        color: #4b5563;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .reportes-links {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .reportes-links a {
+        display: block;
+        padding: 1rem;
+        background: linear-gradient(to right, #0ea5e9, #3b82f6);
+        color: white;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 1.05rem;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .reportes-links a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(14, 165, 233, 0.3);
+    }
+
+    .btn-volver {
+        margin-top: 2rem;
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        background: #ef4444;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .btn-volver:hover {
+        background-color: #dc2626;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin-top: 2rem;
+        margin-bottom: 0.7rem;
+        font-weight: bold;
+        color: #1e3a8a;
+        text-align: left;
+    }
+
+    .section-subtext {
+        text-align: left;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        color: #6b7280;
+    }
+</style>
+
+<div class="admin-reportes-container">
+    <h2>📊 Reportes de Administración Médica</h2>
+    <p>Consulta los reportes clave del sistema clínico.</p>
+
+    <div class="section-title">🗓️ Reportes de Actividad Clínica</div>
+    <p class="section-subtext">Visualiza todas las citas y tratamientos registrados en el sistema.</p>
+    <div class="reportes-links">
+        <a href="{{ url_for('ver_reporte', tipo='citas') }}">📅 Ver Citas Registradas</a>
+        <a href="{{ url_for('ver_reporte', tipo='tratamientos') }}">💊 Ver Tratamientos Aplicados</a>
+    </div>
+
+    <div class="section-title">📄 Descarga de Reportes</div>
+    <p class="section-subtext">Genera informes PDF de los datos clínicos globales.</p>
+    <div class="reportes-links">
+        <a href="{{ url_for('descargar_reporte_pdf', tipo='citas') }}">⬇️ Descargar Reporte PDF - Citas</a>
+        <a href="{{ url_for('descargar_reporte_pdf', tipo='tratamientos') }}">⬇️ Descargar Reporte PDF - Tratamientos</a>
+    </div>
+
+    <div class="section-title">👥 Administración de Personal</div>
+    <p class="section-subtext">Gestiona doctores registrados y la asignación de pacientes.</p>
+    <div class="reportes-links">
+        <a href="{{ url_for('panel_admin_doc') }}">📋 Ver Doctores y sus Datos</a>
+        <a href="{{ url_for('registrar_paciente_admin') }}">➕ Registrar Nuevo Paciente</a>
+    </div>
+
+    <div class="section-title">👨‍⚕️ Reporte de Doctores y sus Pacientes</div>
+<p class="section-subtext">Consulta la relación entre cada doctor y los pacientes que tiene asignados.</p>
+<div class="reportes-links">
+    <a href="{{ url_for('reporte_doctores_pacientes') }}">🖥️ Ver en pantalla</a>
+    <a href="{{ url_for('descargar_reporte_doctores_pacientes') }}">⬇️ Descargar PDF</a>
+</div>
+ 
+    <a class="btn-volver" href="{{ url_for('panel_admin') }}">← Volver al Panel</a>
+</div>
+{% endblock %}
