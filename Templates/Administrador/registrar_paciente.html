@@ -8,113 +8,117 @@
         justify-content: center;
         align-items: center;
         min-height: calc(100vh - 100px);
-        background-color: #f9fafb;
+        background: none; /* Sin color de fondo */
         position: relative;
+        padding: 2rem;
     }
 
     .volver-panel {
         position: absolute;
-        top: 40px;
-        left: 40px;
+        top: 30px;
+        left: 30px;
     }
 
     .volver-panel a {
-        display: inline-block;
-        background-color: #e0e7ff;
+        background-color: #f1f5f9;
         color: #1e3a8a;
         padding: 0.5rem 1rem;
         border-radius: 8px;
         text-decoration: none;
         font-weight: 600;
-        font-size: 0.95rem;
-        transition: background-color 0.3s ease;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
     }
 
     .volver-panel a:hover {
-        background-color: #c7d2fe;
-        color: #1d4ed8;
+        background-color: #dbeafe;
+        color: #2563eb;
     }
 
     .form-container {
-        background-color: #ffffff;
-        padding: 2rem 2.5rem;
+        background: white;
         border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        max-width: 480px;
+        padding: 2rem 2.5rem;
         width: 100%;
+        max-width: 460px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e5e7eb;
     }
 
     .form-container h2 {
         text-align: center;
-        margin-bottom: 1.5rem;
+        color: #1e40af;
         font-size: 1.6rem;
         font-weight: 700;
-        color: #1e40af;
+        margin-bottom: 1.5rem;
     }
 
     .form-container label {
-        display: block;
         font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.3rem;
         margin-top: 1rem;
+        margin-bottom: 0.3rem;
+        display: block;
+        color: #334155;
     }
 
     .form-container input,
     .form-container select {
         width: 100%;
-        padding: 0.6rem;
-        border: 1px solid #cbd5e1;
+        padding: 0.65rem;
         border-radius: 8px;
-        background-color: #f8fafc;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
         font-size: 1rem;
+        transition: border-color 0.3s ease;
     }
 
     .form-container input:focus,
     .form-container select:focus {
+        border-color: #2563eb;
         outline: none;
-        border-color: #3b82f6;
     }
 
-    .form-container .submit-button {
+    .submit-button {
         display: flex;
-        justify-content: space-between;
         gap: 1rem;
         margin-top: 2rem;
     }
 
-    .form-container .submit-button button,
-    .form-container .submit-button a {
+    .submit-button button {
         flex: 1;
+        background-color: #2563eb;
+        color: white;
         padding: 0.75rem;
-        text-align: center;
         border-radius: 10px;
         font-weight: bold;
         font-size: 1rem;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    .form-container .submit-button button {
-        background-color: #1d4ed8;
-        color: white;
         border: none;
+        transition: background-color 0.3s ease;
     }
 
-    .form-container .submit-button button:hover {
-        background-color: #2563eb;
+    .submit-button button:hover {
+        background-color: #1d4ed8;
     }
 
-    .form-container .submit-button .btn-cancelar {
-        background-color: #e5e7eb;
-        color: #1f2937;
-        border: 1px solid #d1d5db;
+    .submit-button .btn-cancelar {
+        flex: 1;
+        background-color: #ef4444;
+        color: white;
+        text-align: center;
+        padding: 0.75rem;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
     }
 
-    .form-container .submit-button .btn-cancelar:hover {
-        background-color: #f3f4f6;
+    .submit-button .btn-cancelar:hover {
+        background-color: #dc2626;
     }
 </style>
+
+
 
 <div class="form-wrapper">
     <div class="volver-panel">
@@ -143,7 +147,7 @@
 
             <div class="submit-button">
                 <button type="submit">Guardar</button>
-                <a href="{{ url_for('panel_admin_doc') }}" class="btn-cancelar">Cancelar</a>
+                <a href="{{ url_for('index') }}" class="btn-cancelar">Cancelar</a>
             </div>
         </form>
     </div>
