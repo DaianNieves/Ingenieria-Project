@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+{% block title %}Reporte de Doctores y sus Pacientes{% endblock %}
+
+{% block content %}
+<style>
+    .reporte-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .reporte-container h2 {
+        text-align: center;
+        font-size: 2rem;
+        color: #0f172a;
+        font-weight: 800;
+        margin-bottom: 2rem;
+    }
+
+    .doctor-block {
+        background-color: #f1f5f9;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 6px solid #2563eb;
+    }
+
+    .doctor-block h3 {
+        font-size: 1.3rem;
+        color: #1e40af;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .doctor-block p {
+        color: #475569;
+        margin-bottom: 0.5rem;
+    }
+
+    .paciente-list {
+        list-style: none;
+        padding-left: 1rem;
+    }
+
+    .paciente-list li {
+        margin-bottom: 0.4rem;
+        color: #334155;
+        padding-left: 1.3rem;
+    }
+
+    .actions {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .actions a {
+        display: inline-block;
+        margin: 0 0.5rem;
+        padding: 0.7rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-volver {
+        background-color: #ef4444;
+    }
+
+    .btn-descargar {
+        background-color: #2563eb;
+    }
+</style>
+
+<div class="reporte-container">
+    <h2>📋 Reporte de Doctores con sus Pacientes</h2>
+
+    {% if doctores %}
+        {% for doctor in doctores %}
+            <div class="doctor-block">
+                <h3>👨‍⚕️ {{ doctor.nombre }}</h3>
+                <p><strong>Especialidad:</strong> {{ doctor.especialidad or 'No registrada' }}</p>
+                <p><strong>Pacientes asignados:</strong></p>
+                {% if doctor.pacientes %}
+                    <ul class="paciente-list">
+                        {% for paciente in doctor.pacientes %}
+                            <li>👤 {{ paciente.nombre }} – 📞 {{ paciente.telefono or 'No registrado' }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>— No tiene pacientes registrados.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay doctores registrados.</p>
+    {% endif %}
+
+    <div class="actions">
+        <a href="{{ url_for('panel_admin') }}" class="btn-volver">← Volver al Panel</a>
+        <a href="{{ url_for('descargar_reporte_doctores_pacientes') }}" class="btn-descargar">⬇️ Descargar PDF</a>
+    </div>
+</div>
+{% endblock %}

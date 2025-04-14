@@ -224,7 +224,7 @@ def reporte_doctores_pacientes():
                 'pacientes': pacientes
             })
 
-        return render_template('Administrador/reporte_doctores_pacientes.html', doctores=doctores)
+            return render_template('Administrador/reporte_doctores_pacientes.html', doctores=doctores)
 
     except mysql.connector.Error as e:
         flash(f'❌ Error al cargar el reporte: {e}', 'error')
