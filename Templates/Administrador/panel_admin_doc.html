@@ -33,11 +33,17 @@
                     <td>{{ doctor.telefono or '—' }}</td>
                     <td>{{ doctor.fecha_registro.strftime('%d/%m/%Y') }}</td>
                     <td class="action-buttons">
-                        <button class="btn-action edit" onclick="openEditModal('{{ doctor.id }}', '{{ doctor.nombre }}', '{{ doctor.correo }}', '{{ doctor.especialidad }}', '{{ doctor.telefono }}')">🖊️ Editar</button>                        <!-- Formulario para eliminar -->
-                        <form action="{{ url_for('eliminar_doctor', id=doctor.id) }}" method="POST" style="display: inline;">
-                            <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este doctor?');">🗑️ Eliminar</button>
+                        <button class="btn-action edit" onclick="openEditModal('{{ doctor.id }}', '{{ doctor.nombre }}', '{{ doctor.correo }}', '{{ doctor.especialidad }}', '{{ doctor.telefono }}')">
+                            ✏️ Editar
+                        </button>
+                        
+                        <form action="{{ url_for('eliminar_doctor', id=doctor.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este doctor?');">
+                                🗑️ Eliminar
+                            </button>
                         </form>
-                    </td>                    
+                    </td>
+                                      
                 </tr>
                 {% endfor %}
             </tbody>
