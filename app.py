@@ -354,6 +354,66 @@ def eliminar_doctor(id):
     return redirect(url_for('panel_admin_doc'))
 
 # Rutas para citas y tratamientos
+@app.route('/tratamientos/registrar_directo', methods=['GET', 'POST'])
+def registrar_tratamiento_directo():
+    if session.get('rol') != 'doctor':
+        flash('Acceso restringido a doctores.', 'error')
+        return redirect(url_for('index'))
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Traer pacientes para el SELECT
+        cursor.execute("SELECT id, nombre FROM pacientes ORDER BY nombre")
+        pacientes = cursor.fetchall()
+
+        if request.method == 'POST':
+            paciente_id = request.form.get('paciente_id')
+            diagnostico = request.form.get('diagnostico')
+            tratamiento = request.form.get('tratamiento')
+            observaciones = request.form.get('observaciones')
+
+            if not paciente_id:
+                flash("⚠️ Debes seleccionar un paciente.", "error")
+                return redirect(request.url)
+
+            # Obtener doctor actual
+            cursor.execute("SELECT id FROM doctores WHERE usuario_id = %s", (session['usuario_id'],))
+            doctor = cursor.fetchone()
+            if not doctor:
+                flash("❌ Doctor no encontrado.", "error")
+                return redirect(url_for('panel_doctor'))
+
+            doctor_id = doctor['id']
+
+            # Insertar cita automática
+            cursor.execute("""
+                INSERT INTO citas (doctor_id, paciente_id, fecha, observaciones)
+                VALUES (%s, %s, NOW(), %s)
+            """, (doctor_id, paciente_id, "Tratamiento directo sin cita"))
+
+            cita_id = cursor.lastrowid
+
+            # Insertar tratamiento
+            cursor.execute("""
+                INSERT INTO tratamientos (cita_id, diagnostico, tratamiento_aplicado, observaciones)
+                VALUES (%s, %s, %s, %s)
+            """, (cita_id, diagnostico, tratamiento, observaciones))
+
+            conn.commit()
+            flash("✅ Tratamiento registrado correctamente.", "success")
+            return redirect(url_for("panel_doctor"))
+
+    except mysql.connector.Error as e:
+        flash(f"❌ Error al registrar tratamiento: {e}", "error")
+
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        if 'conn' in locals() and conn.is_connected(): conn.close()
+
+    return render_template("Dentista/registrar_tratamiento.html", pacientes=pacientes)
+
 @app.route('/tratamientos/registrar/<int:cita_id>', methods=['GET', 'POST'])
 def registrar_tratamiento(cita_id):
     if session.get('rol') != 'doctor':
@@ -365,7 +425,6 @@ def registrar_tratamiento(cita_id):
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # Obtener datos del paciente desde la cita
         cursor.execute("""
             SELECT p.nombre FROM pacientes p
             JOIN citas c ON c.paciente_id = p.id
@@ -374,7 +433,6 @@ def registrar_tratamiento(cita_id):
         paciente = cursor.fetchone()
 
         if request.method == 'POST':
-            # NO LEAS paciente_id, porque viene de la cita y ya lo tienes
             diagnostico = request.form.get('diagnostico')
             tratamiento = request.form.get('tratamiento')
             observaciones = request.form.get('observaciones')
@@ -389,8 +447,7 @@ def registrar_tratamiento(cita_id):
             return redirect(url_for('panel_doctor'))
 
     except mysql.connector.Error as e:
-        flash(f'❌ Error al registrar tratamiento: {e}', 'error')
-
+        flash(f'❌ Error: {e}', 'error')
     finally:
         if 'cursor' in locals(): cursor.close()
         if 'conn' in locals() and conn.is_connected(): conn.close()
