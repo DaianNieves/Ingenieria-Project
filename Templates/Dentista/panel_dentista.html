@@ -65,6 +65,18 @@
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    .dashboard-links .cerrar-sesion {
+        background: linear-gradient(to right, #ef4444, #dc2626);
+        color: white !important;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .dashboard-links .cerrar-sesion:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 12px rgba(245, 7, 7, 0.95);
+    }
+    
 </style>
 
 <div class="dashboard">
@@ -77,7 +89,7 @@
         <a href="{{ url_for('ver_citas') }}">🗓️ Ver Mis Citas</a>
         <a href="{{ url_for('registrar_tratamiento_directo') }}">➕💊 Registrar Tratamiento Manual</a>
         <a href="{{ url_for('ver_opcion_reportes') }}">📊 Ver Reportes</a>
-        <a href="{{ url_for('logout') }}">🚪 Cerrar Sesión</a>
+        <a href="{{ url_for('logout') }}" class="cerrar-sesion">🚪 Cerrar Sesión</a>
     </div>
 </div>
 {% endblock %}

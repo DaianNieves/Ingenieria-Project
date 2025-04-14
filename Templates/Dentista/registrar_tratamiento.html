@@ -102,6 +102,18 @@
         text-decoration: underline;
         color: #1d4ed8;
     }
+    .dashboard-links .cerrar-sesion {
+        background: linear-gradient(to right, #ef4444, #dc2626);
+        color: white !important;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .dashboard-links .cerrar-sesion:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 12px rgba(239, 68, 68, 0.4);
+    }
+    
 </style>
 
 <div class="form-wrapper">
@@ -109,7 +121,11 @@
         <h2>🦷 Registrar Tratamiento</h2>
 
         {% if paciente is defined and paciente %}
-            <div class="paciente-info">Tratamiento para: {{ paciente.nombre }}</div>
+        <div class="paciente-info">
+            😷 <span class="paciente-nombre">Tratamiento para:</span>
+            <span class="nombre-resaltado">{{ paciente.nombre }}</span>
+        </div>
+        
         {% elif pacientes is defined and pacientes %}
             <div class="input-group">
                 <label for="paciente_id">Seleccionar Paciente</label>
