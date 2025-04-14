@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+{% block title %}Lista de Pacientes{% endblock %}
+
+{% block content %}
+<style>
+    .tabla-container {
+        padding: 2rem;
+    }
+
+    .btn-volver {
+        background-color: #f1f5f9;
+        color: #1e3a8a;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-volver:hover {
+        background-color: #dbeafe;
+        color: #2563eb;
+    }
+
+    .tabla-pacientes {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+    }
+
+    .tabla-pacientes thead {
+        background-color: #1e3a8a;
+        color: white;
+    }
+
+    .tabla-pacientes th,
+    .tabla-pacientes td {
+        padding: 1rem;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    .tabla-pacientes tbody tr {
+        border-bottom: 1px solid #e5e7eb;
+        transition: background-color 0.2s ease;
+    }
+
+    .tabla-pacientes tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    .titulo-lista {
+        color: #1e40af;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .mensaje-vacio {
+        color: #64748b;
+        font-size: 1rem;
+    }
+</style>
+
+<div class="tabla-container">
+    <div style="margin-bottom: 1.5rem;">
+        <a href="{{ url_for('panel_admin') }}" class="btn-volver">← Volver al Panel</a>
+    </div>
+
+    <h2 class="titulo-lista">📋 Lista de Pacientes</h2>
+
+    {% if pacientes %}
+    <table class="tabla-pacientes">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Fecha de Nacimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{ paciente.nombre }}</td>
+                <td>{{ paciente.telefono or '—' }}</td>
+                <td>{{ paciente.fecha_nacimiento or '—' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="mensaje-vacio">No hay pacientes registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}
