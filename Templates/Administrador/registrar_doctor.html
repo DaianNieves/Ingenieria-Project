@@ -3,6 +3,141 @@
 {% block title %}Registrar Doctor{% endblock %}
 
 {% block content %}
+<style>
+    .flash-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: fadeOut 4s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+
+    .flash-message.success {
+        background-color: #22c55e;
+    }
+
+    .flash-message.error {
+        background-color: #ef4444;
+    }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    .login-container {
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .login-title {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #1e3a8a;
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+    .input-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .submit-button {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+    }
+
+    .submit-button button,
+    .submit-button .btn-cancelar {
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .submit-button button {
+        background-color: #2563eb;
+        color: white;
+    }
+
+    .submit-button button:hover {
+        background-color: #1d4ed8;
+    }
+
+    .submit-button .btn-cancelar {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    .submit-button .btn-cancelar:hover {
+        background-color: #e5e7eb;
+    }
+        .flash-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: bold;
+            z-index: 9999;
+            animation: fadeOut 4s forwards;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+        }
+        .flash-message.success {
+            background-color: #22c55e;
+        }
+        .flash-message.error {
+            background-color: #ef4444;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+</style>
+
+<!-- Flash message -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
 <div style="display: flex; justify-content: center; align-items: center; height: 100vh; padding: 1rem;">
     <div class="login-container">
         <h2 class="login-title">Registrar nuevo doctor</h2>
@@ -11,30 +146,30 @@
                 <label for="nombre">Nombre completo:</label>
                 <input type="text" id="nombre" name="nombre" required>
             </div>
-    
+
             <div class="input-group">
                 <label for="correo">Correo electrónico:</label>
                 <input type="email" id="correo" name="correo" required>
             </div>
-    
+
             <div class="input-group">
                 <label for="contraseña">Contraseña:</label>
                 <input type="password" id="contraseña" name="contraseña" required>
             </div>
-    
+
             <div class="input-group">
                 <label for="especialidad">Especialidad:</label>
                 <input type="text" id="especialidad" name="especialidad" required>
             </div>
-    
+
             <div class="input-group">
                 <label for="telefono">Teléfono:</label>
                 <input type="text" id="telefono" name="telefono" required>
             </div>
-    
+
             <div class="submit-button">
-                <button type="submit" class="back-button">Registrar</button>
-                <a href="{{ url_for('panel_admin_doc') }}" class="back-button btn-cancelar">Cancelar</a>
+                <button type="submit">Registrar</button>
+                <a href="{{ url_for('panel_admin_doc') }}" class="btn-cancelar">Cancelar</a>
             </div>
         </form>
     </div>
