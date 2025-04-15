@@ -788,7 +788,8 @@ def registrar_cita():
 
             conn.commit()
             flash("✅ Cita registrada correctamente.", "success")
-            return redirect(url_for('panel_admin'))
+            return render_template('Administrador/registrar_cita.html', doctores=doctores, pacientes=pacientes)
+
 
     except mysql.connector.Error as e:
         flash(f"❌ Error al registrar cita: {e}", "error")

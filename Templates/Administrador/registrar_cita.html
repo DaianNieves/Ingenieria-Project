@@ -3,11 +3,25 @@
 
 {% block content %}
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background-color: white;
-        font-family: sans-serif;
+    .flash-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: fadeOut 4s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+    .flash-message.success { background-color: #22c55e; }
+    .flash-message.error { background-color: #ef4444; }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-10px); }
     }
 
     .form-wrapper {
@@ -28,10 +42,28 @@
 
     .cita-form-container h2 {
         text-align: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         color: #1e3a8a;
         font-size: 1.5rem;
         font-weight: bold;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: #1e3a8a;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .back-link i {
+        font-style: normal;
+        margin-right: 6px;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+        color: #2563eb;
     }
 
     .section-title {
@@ -90,41 +122,22 @@
     .submit-button button:hover {
         background-color: #1d4ed8;
     }
-
-    .back-button {
-        margin-top: 1rem;
-        text-align: center;
-    }
-
-    .back-button a {
-        text-decoration: none;
-        color: #374151;
-        font-size: 0.9rem;
-        padding: 0.4rem 1rem;
-        border-radius: 6px;
-        background-color: #e5e7eb;
-        display: inline-block;
-        transition: background-color 0.2s;
-    }
-
-    .back-button a:hover {
-        background-color: #d1d5db;
-    }
 </style>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
 <div class="form-wrapper">
     <div class="cita-form-container">
-        <h2>📅 Registrar Nueva Cita</h2>
+        <a href="{{ url_for('panel_admin') }}" class="back-link"><i>←</i> Volver al Panel</a>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% endwith %}
+        <h2>📅 Registrar Nueva Cita</h2>
 
         <form method="POST">
             <div class="section-title">👤 Selección del Paciente</div>
@@ -168,10 +181,6 @@
 
             <div class="submit-button">
                 <button type="submit">💾 Guardar Cita</button>
-            </div>
-
-            <div class="back-button">
-                <a href="{{ url_for('panel_admin') }}">← Volver al Panel</a>
             </div>
         </form>
     </div>

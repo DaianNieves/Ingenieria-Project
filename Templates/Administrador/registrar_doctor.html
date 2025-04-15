@@ -16,14 +16,8 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         color: white;
     }
-
-    .flash-message.success {
-        background-color: #22c55e;
-    }
-
-    .flash-message.error {
-        background-color: #ef4444;
-    }
+    .flash-message.success { background-color: #22c55e; }
+    .flash-message.error { background-color: #ef4444; }
 
     @keyframes fadeOut {
         0% { opacity: 1; }
@@ -58,7 +52,8 @@
         margin-bottom: 0.5rem;
     }
 
-    .input-group input {
+    .input-group input,
+    .input-group select {
         width: 100%;
         padding: 0.6rem;
         border: 1px solid #d1d5db;
@@ -100,46 +95,39 @@
     .submit-button .btn-cancelar:hover {
         background-color: #e5e7eb;
     }
-        .flash-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-weight: bold;
-            z-index: 9999;
-            animation: fadeOut 4s forwards;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            color: white;
-        }
-        .flash-message.success {
-            background-color: #22c55e;
-        }
-        .flash-message.error {
-            background-color: #ef4444;
-        }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-10px); }
-        }
 
+    .back-link {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        color: #1e3a8a;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+        color: #2563eb;
+    }
+
+    .back-link i {
+        margin-right: 8px;
+        font-style: normal;
+    }
 </style>
 
 <!-- Flash message -->
 {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="flash-message {{ category }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 {% endwith %}
-
 
 <div style="display: flex; justify-content: center; align-items: center; height: 100vh; padding: 1rem;">
     <div class="login-container">
+        <a href="{{ url_for('panel_admin_doc') }}" class="back-link"><i>←</i> Volver al Panel de Doctores</a>
         <h2 class="login-title">Registrar nuevo doctor</h2>
         <form method="POST" action="{{ url_for('registrar_doctor') }}">
             <div class="input-group">
@@ -159,7 +147,19 @@
 
             <div class="input-group">
                 <label for="especialidad">Especialidad:</label>
-                <input type="text" id="especialidad" name="especialidad" required>
+                <select id="especialidad" name="especialidad" required>
+                    <option value="">-- Selecciona una especialidad --</option>
+                    <option value="Odontología General">Odontología General</option>
+                    <option value="Ortodoncia">Ortodoncia</option>
+                    <option value="Endodoncia">Endodoncia</option>
+                    <option value="Periodoncia">Periodoncia</option>
+                    <option value="Cirugía Oral">Cirugía Oral</option>
+                    <option value="Implantología">Implantología</option>
+                    <option value="Odontopediatría">Odontopediatría</option>
+                    <option value="Radiología Dental">Radiología Dental</option>
+                    <option value="Estética Dental">Estética Dental</option>
+                    <option value="Otra">Otra</option>
+                </select>
             </div>
 
             <div class="input-group">
