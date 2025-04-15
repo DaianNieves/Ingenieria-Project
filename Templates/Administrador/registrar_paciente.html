@@ -3,12 +3,34 @@
 
 {% block content %}
 <style>
+    .flash-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: fadeOut 4s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+
+    .flash-message.success { background-color: #22c55e; }
+    .flash-message.error { background-color: #ef4444; }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-10px); }
+    }
+
     .form-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: calc(100vh - 100px);
-        background: none; /* Sin color de fondo */
+        background: none;
         position: relative;
         padding: 2rem;
     }
@@ -61,8 +83,7 @@
         color: #334155;
     }
 
-    .form-container input,
-    .form-container select {
+    .form-container input {
         width: 100%;
         padding: 0.65rem;
         border-radius: 8px;
@@ -72,8 +93,7 @@
         transition: border-color 0.3s ease;
     }
 
-    .form-container input:focus,
-    .form-container select:focus {
+    .form-container input:focus {
         border-color: #2563eb;
         outline: none;
     }
@@ -118,7 +138,14 @@
     }
 </style>
 
-
+<!-- Mensaje flotante -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
 <div class="form-wrapper">
     <div class="volver-panel">
@@ -137,17 +164,9 @@
             <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
             <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
 
-            <label for="doctor_id">Asignar a Doctor:</label>
-            <select name="doctor_id" id="doctor_id" required>
-                <option value="">-- Selecciona un doctor --</option>
-                {% for doctor in doctores %}
-                    <option value="{{ doctor.id }}">{{ doctor.nombre }}</option>
-                {% endfor %}
-            </select>
-
             <div class="submit-button">
                 <button type="submit">Guardar</button>
-                <a href="{{ url_for('index') }}" class="btn-cancelar">Cancelar</a>
+                <a href="{{ url_for('panel_admin') }}" class="btn-cancelar">Cancelar</a>
             </div>
         </form>
     </div>

@@ -26,3 +26,20 @@ window.onclick = function(event) {
         closeEditModal();
     }
 }
+
+
+
+//Para pacientes
+function openEditPatientModal(id, nombre, telefono, fechaNacimiento) {
+    document.getElementById('pacienteId').value = id;
+    document.getElementById('nombrePaciente').value = nombre;
+    document.getElementById('telefonoPaciente').value = telefono || '';
+    document.getElementById('fechaNacimientoPaciente').value = fechaNacimiento || '';
+
+    // Asegúrate de que este ID sea correcto en tu HTML
+    document.getElementById('editPacienteForm').action = `/editar_paciente/${id}`;
+
+    document.getElementById('editPatientModal').style.display = 'block';
+}
+
+

@@ -3,12 +3,32 @@
 
 {% block content %}
 <style>
+    .flash-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: fadeOut 4s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+    .flash-message.success { background-color: #22c55e; }
+    .flash-message.error { background-color: #ef4444; }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-10px); }
+    }
+
     .form-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 2rem;
-        background-color: #f9fafb;
     }
 
     .cita-form-container {
@@ -22,10 +42,28 @@
 
     .cita-form-container h2 {
         text-align: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         color: #1e3a8a;
         font-size: 1.5rem;
         font-weight: bold;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: #1e3a8a;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .back-link i {
+        font-style: normal;
+        margin-right: 6px;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+        color: #2563eb;
     }
 
     .section-title {
@@ -50,14 +88,14 @@
     }
 
     .input-group input,
-    .input-group textarea,
-    .input-group select {
+    .input-group select,
+    .input-group textarea {
         width: 100%;
         padding: 0.6rem;
         border: 1px solid #d1d5db;
         border-radius: 8px;
         font-size: 0.95rem;
-        background-color: #f9fafb;
+        background-color: #fff;
     }
 
     .input-group textarea {
@@ -84,44 +122,34 @@
     .submit-button button:hover {
         background-color: #1d4ed8;
     }
-
-    .back-button {
-        margin-top: 1rem;
-        text-align: center;
-    }
-
-    .back-button a {
-        text-decoration: none;
-        color: #ffffff;
-        font-size: 0.9rem;
-        padding: 0.5rem 1.2rem;
-        border-radius: 8px;
-        background-color: #ef4444;
-        display: inline-block;
-        transition: background-color 0.2s;
-        font-weight: bold;
-    }
-
-    .back-button a:hover {
-        background-color: #dc2626;
-    }
 </style>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
 <div class="form-wrapper">
     <div class="cita-form-container">
+        <a href="{{ url_for('panel_admin') }}" class="back-link"><i>←</i> Volver al Panel</a>
+
         <h2>📅 Registrar Nueva Cita</h2>
 
         <form method="POST">
-            <div class="section-title">👤 Datos del Paciente</div>
+            <div class="section-title">👤 Selección del Paciente</div>
 
             <div class="input-group">
-                <label for="paciente">Nombre Completo</label>
-                <input type="text" id="paciente" name="paciente" placeholder="Ej. Juan Pérez" required>
-            </div>
-
-            <div class="input-group">
-                <label for="telefono">Teléfono</label>
-                <input type="text" id="telefono" name="telefono" placeholder="Ej. 4491234567" required>
+                <label for="paciente_id">Paciente</label>
+                <select id="paciente_id" name="paciente_id" required>
+                    <option value="">-- Selecciona un paciente --</option>
+                    {% for paciente in pacientes %}
+                        <option value="{{ paciente.id }}">{{ paciente.nombre }} - {{ paciente.telefono }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="input-group">
@@ -133,7 +161,7 @@
                     {% endfor %}
                 </select>
             </div>
-            
+
             <div class="section-title">🕒 Detalles de la Cita</div>
 
             <div class="input-group">
@@ -153,10 +181,6 @@
 
             <div class="submit-button">
                 <button type="submit">💾 Guardar Cita</button>
-            </div>
-
-            <div class="back-button">
-                <a href="{{ url_for('panel_admin') }}">← Volver al Panel</a>
             </div>
         </form>
     </div>

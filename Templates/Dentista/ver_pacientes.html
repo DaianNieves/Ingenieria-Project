@@ -41,23 +41,11 @@
         background-color: #f0f9ff;
     }
 
-    .back-link {
-        display: block;
-        text-align: center;
-        margin-top: 2rem;
-        text-decoration: none;
-        font-weight: bold;
-        color: #2563eb;
-    }
-
-    .back-link:hover {
-        text-decoration: underline;
-    }
     .volver-panel {
         text-align: center;
         margin-top: 2rem;
     }
-    
+
     .volver-panel a {
         display: inline-block;
         background: linear-gradient(to right, #06b6d4, #0284c7);
@@ -69,16 +57,15 @@
         font-size: 1rem;
         transition: background 0.3s ease, transform 0.2s ease;
     }
-    
+
     .volver-panel a:hover {
         background: linear-gradient(to right, #0ea5e9, #0369a1);
         transform: scale(1.03);
     }
-    
 </style>
 
 <div class="pacientes-container">
-    <h2>👥 Pacientes Asignados</h2>
+    <h2>👥 Mis Pacientes</h2>
 
     {% if pacientes %}
     <table class="pacientes-table">
@@ -106,5 +93,5 @@
     <div class="volver-panel">
         <a href="{{ url_for('panel_doctor') }}">← Volver al Panel</a>
     </div>
-    
+</div>
 {% endblock %}

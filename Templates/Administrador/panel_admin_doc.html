@@ -31,7 +31,14 @@
                     <td>{{ doctor.correo }}</td>
                     <td>{{ doctor.especialidad }}</td>
                     <td>{{ doctor.telefono or '—' }}</td>
-                    <td>{{ doctor.fecha_registro.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        {% if doctor.fecha_registro %}
+                            {{ doctor.fecha_registro.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            Sin registro
+                        {% endif %}
+                    </td>
+                    
                     <td class="action-buttons">
                         <button class="btn-action edit" onclick="openEditModal('{{ doctor.id }}', '{{ doctor.nombre }}', '{{ doctor.correo }}', '{{ doctor.especialidad }}', '{{ doctor.telefono }}')">
                             ✏️ Editar
