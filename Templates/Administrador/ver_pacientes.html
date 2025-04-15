@@ -1,13 +1,29 @@
 {% extends 'layout.html' %}
+
 {% block title %}Pacientes Registrados{% endblock %}
 
 {% block content %}
-<div class="admin-dashboard-container">
-    <div class="admin-header">
-        <h2>🧑‍⚕️ Panel de Pacientes</h2>
-        <p>Listado de pacientes registrados en el sistema.</p>
-    </div>
+<div style="padding: 2rem;">
+    <h2 style="text-align: center; color: #1e3a8a;">👨‍⚕️ Lista de Pacientes</h2>
 
+    <div style="text-align: right; margin-bottom: 1.2rem;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} flash-message">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+        <a href="{{ url_for('registrar_paciente_admin') }}"
+           style="background-color: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            ➕ Registrar Paciente
+        </a>
+    </div>
     {% if pacientes %}
     <div class="table-responsive">
         <table class="styled-table">

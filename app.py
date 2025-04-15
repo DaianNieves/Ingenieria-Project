@@ -721,84 +721,37 @@ def registrar_paciente_doctor():
 
 
  
-@app.route('/citas/registrar', methods=['GET', 'POST'])
-def registrar_cita():
-    if session.get('rol') != 'doctor':
-        flash('Acceso restringido. Solo los doctores pueden registrar citas.', 'error')
-        return redirect(url_for('index'))
-    if request.method == 'POST':
-        paciente_id = request.form.get('paciente_id')
-        if not paciente_id:
-            flash('⚠️ Debes seleccionar un paciente.', 'error')
-            return redirect(request.url)
-
-        paciente_telefono = request.form.get('telefono')
-        paciente_fecha_nac = request.form.get('fecha_nacimiento')
-        fecha = request.form.get('fecha')
-        hora = request.form.get('hora')
-        observaciones = request.form.get('descripcion')
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
-            cursor.execute("SELECT id FROM pacientes WHERE nombre = %s AND telefono = %s", (paciente_nombre, paciente_telefono))
-            paciente = cursor.fetchone()
-            if paciente:
-                paciente_id = paciente[0]
-            else:
-                cursor.execute(
-                    "INSERT INTO pacientes (nombre, telefono, fecha_nacimiento) VALUES (%s, %s, %s)",
-                    (paciente_nombre, paciente_telefono, paciente_fecha_nac)
-                )
-                paciente_id = cursor.lastrowid
-            cursor.execute("SELECT id FROM doctores WHERE usuario_id = %s", (session['usuario_id'],))
-            doctor = cursor.fetchone()
-            if not doctor:
-                flash("❌ No se encontró el ID del doctor.", "error")
-                return redirect(url_for('panel_doctor'))
-            doctor_id = doctor[0]
-            fecha_completa = f"{fecha} {hora}"
-            cursor.execute(
-                "INSERT INTO citas (doctor_id, paciente_id, fecha, observaciones) VALUES (%s, %s, %s, %s)",
-                (doctor_id, paciente_id, fecha_completa, observaciones)
-            )
-            conn.commit()
-            flash("✅ Cita registrada correctamente.", "success")
-            return redirect(url_for('panel_doctor'))
-        except mysql.connector.Error as e:
-            flash(f"❌ Error al registrar la cita: {e}", "error")
-        finally:
-            if 'cursor' in locals():
-                cursor.close()
-            if 'conn' in locals() and conn.is_connected():
-                conn.close()
-    return render_template('Dentista/registrar_cita.html')
-
 @app.route('/citas/mis_citas')
 def ver_citas():
     if session.get('rol') != 'doctor':
         flash('Acceso restringido. Solo los doctores pueden ver sus citas.', 'error')
         return redirect(url_for('index'))
+
     try:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
-        query = """
+
+        cursor.execute("""
             SELECT c.id, c.fecha, p.nombre AS paciente, p.telefono, p.fecha_nacimiento, c.observaciones
             FROM citas c
             JOIN pacientes p ON c.paciente_id = p.id
             JOIN doctores d ON c.doctor_id = d.id
             WHERE d.usuario_id = %s
             ORDER BY c.fecha
-        """
-        cursor.execute(query, (session['usuario_id'],))
+        """, (session['usuario_id'],))
+
         citas = cursor.fetchall()
+
     except mysql.connector.Error as e:
         flash(f'❌ Error al cargar citas: {e}', 'error')
         citas = []
+
     finally:
         if 'cursor' in locals():
             cursor.close()
         if 'conn' in locals() and conn.is_connected():
             conn.close()
+
     return render_template('Dentista/mis_citas.html', citas=citas)
 
 @app.route('/logout')
