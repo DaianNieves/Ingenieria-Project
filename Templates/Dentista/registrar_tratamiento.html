@@ -125,15 +125,23 @@
         <h2>🦷 Registrar Tratamiento</h2>
 
         <form method="POST">
-            <div class="input-group">
-                <label for="paciente_id">Seleccionar Paciente</label>
-                <select name="paciente_id" id="paciente_id" required>
-                    <option value="">-- Selecciona un paciente --</option>
-                    {% for p in pacientes %}
-                    <option value="{{ p.id }}">{{ p.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            {% if paciente %}
+                <div class="input-group">
+                    <label>Paciente:</label>
+                    <p><strong>{{ paciente.nombre }}</strong> (📞 {{ paciente.telefono }})</p>
+                    <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
+                </div>
+            {% else %}
+                <div class="input-group">
+                    <label for="paciente_id">Seleccionar Paciente</label>
+                    <select name="paciente_id" id="paciente_id" required>
+                        <option value="">-- Selecciona un paciente --</option>
+                        {% for p in pacientes %}
+                        <option value="{{ p.id }}">{{ p.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
 
             <div class="input-group">
                 <label for="diagnostico">Diagnóstico</label>
