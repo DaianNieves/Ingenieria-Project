@@ -8,7 +8,8 @@
         <p>Listado de doctores registrados en el sistema.</p>
 
         <div style="text-align: right; margin-top: 10px;">
-            <a href="{{ url_for('registrar_doctor') }}" class="btn btn-primary">➕ Registrar Doctor</a>
+            <!-- Axioma de claridad: acción visible para agregar un nuevo doctor -->
+            <a href="{{ url_for('registrar_doctor') }}" class="btn btn-primary" aria-label="Registrar un nuevo doctor">➕ Registrar Doctor</a>
         </div>
     </div>
 
@@ -17,6 +18,7 @@
         <table class="styled-table">
             <thead>
                 <tr>
+                    <!-- Axioma de claridad: encabezados claros para cada columna -->
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Especialidad</th>
@@ -28,15 +30,20 @@
             <tbody>
                 {% for doctor in doctores %}
                 <tr>
+                    <!-- Axioma de retroalimentación: mostrar datos actuales en pantalla -->
                     <td>{{ doctor.nombre }}</td>
                     <td>{{ doctor.correo }}</td>
                     <td>{{ doctor.especialidad }}</td>
+                    <!-- Axioma de usabilidad: si no hay teléfono, mostrar símbolo claro en lugar de vacío -->
                     <td>{{ doctor.telefono or '—' }}</td>
                     <td>{{ doctor.fecha_registro.strftime('%d/%m/%Y') }}</td>
                     <td class="action-buttons">
-                        <a href="{{ url_for('editar_doctor', id=doctor.id) }}" class="btn-action edit">🖊️ Editar</a>
+                        <!-- Axioma de claridad: botón con ícono y texto claro -->
+                        <a href="{{ url_for('editar_doctor', id=doctor.id) }}" class="btn-action edit" aria-label="Editar doctor {{ doctor.nombre }}">🖊️ Editar</a>
                         <form action="{{ url_for('eliminar_doctor', id=doctor.id) }}" method="POST" style="display: inline;">
-                            <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este doctor?');">🗑️ Eliminar</button>
+                            <!-- Axioma de protección del usuario: confirmación antes de eliminar -->
+                            <button type="submit" class="btn-action delete" aria-label="Eliminar doctor {{ doctor.nombre }}"
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar este doctor?');">🗑️ Eliminar</button>
                         </form>
                     </td>                    
                 </tr>
@@ -45,11 +52,13 @@
         </table>
     </div>
     {% else %}
+    <!-- Axioma de retroalimentación: mensaje claro si no hay doctores -->
     <p class="empty-message">No hay doctores registrados actualmente.</p>
     {% endif %}
 
     <div class="back-link-container">
-        <a class="dashboard-card back-link" href="{{ url_for('panel_admin') }}">⬅️ Volver al Panel</a>
+        <!-- Axioma de accesibilidad y navegación clara -->
+        <a class="dashboard-card back-link" href="{{ url_for('panel_admin') }}" aria-label="Volver al panel de administrador">⬅️ Volver al Panel</a>
     </div>
 </div>
 {% endblock %}

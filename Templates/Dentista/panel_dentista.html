@@ -3,12 +3,19 @@
 
 {% block content %}
 <div class="dashboard">
+    <!-- Axioma de claridad: mensaje personalizado con el nombre del usuario -->
     <h2>Bienvenido, Dr. {{ session['nombre'] }}</h2>
     <p>Aquí puedes ver y gestionar tus citas y tratamientos.</p>
 
     <div class="dashboard-links">
+        <!-- Axioma de usabilidad: accesos directos con íconos para navegación rápida -->
         <a href="#">🗓️ Mis Citas</a>
+
+        <!-- Axioma de claridad + protección del usuario: el enlace incluye el parámetro de cita -->
+        <!-- Nota: el `cita_id=1` es un valor fijo; en un sistema real se esperaría que sea dinámico -->
         <a href="{{ url_for('registrar_tratamiento', cita_id=1) }}">💊 Registrar Tratamientos</a>
+
+        <!-- Axioma de protección del usuario: cierre de sesión accesible -->
         <a href="{{ url_for('logout') }}">🚪 Cerrar Sesión</a>
     </div>
 </div>

@@ -15,4 +15,27 @@
         <a href="{{ url_for('logout') }}" class="dashboard-card logout">🚪 Cerrar Sesión</a>
     </div>
 </div>
+{% endblock %}{% extends 'layout.html' %}
+{% block title %}Panel del Administrador{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-container">
+    <div class="admin-welcome">
+        <!-- Axioma de personalización y retroalimentación: saludo dinámico al administrador -->
+        <h2>👋 Bienvenido, {{ session['nombre'] }}</h2>
+        <p>Este es el panel de administración de la clínica dental. Usa los accesos rápidos para navegar.</p>
+    </div>
+
+    <div class="dashboard-links">
+        <!-- Axioma de claridad: enlaces con íconos y texto claro sobre su función -->
+        <a href="{{ url_for('panel_admin_doc') }}" class="dashboard-card" aria-label="Ver lista de doctores registrados">📋 Ver Doctores</a>
+        
+        <!-- Axioma de diseño anticipado: enlaces preparados para funcionalidades futuras -->
+        <a href="#" class="dashboard-card" aria-label="Ver citas agendadas">🗓️ Ver Citas</a>
+        <a href="#" class="dashboard-card" aria-label="Ver reportes administrativos">📈 Reportes</a>
+        
+        <!-- Axioma de claridad y seguridad: cerrar sesión claramente identificado -->
+        <a href="{{ url_for('logout') }}" class="dashboard-card logout" aria-label="Cerrar sesión del administrador">🚪 Cerrar Sesión</a>
+    </div>
+</div>
 {% endblock %}

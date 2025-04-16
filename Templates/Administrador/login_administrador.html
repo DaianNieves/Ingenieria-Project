@@ -8,13 +8,29 @@
 
         <form class="login-form" action="{{ url_for('login_admin') }}" method="post">
             <div class="input-group">
-                <label for="correo">Correo electrónico:</label>
-                <input type="email" id="correo" name="correo" required>
+                <!-- Axioma de accesibilidad: aria-label mejora la experiencia con lectores de pantalla -->
+                <label for="correo" aria-label="Correo electrónico del administrador">Correo electrónico:</label>
+                <!-- Axioma de claridad: placeholder guía al usuario -->
+                <!-- Axioma de usabilidad: conserva el input del usuario -->
+                <input 
+                    type="email" 
+                    id="correo" 
+                    name="correo" 
+                    placeholder="admin@clinica.com" 
+                    value="{{ request.form.correo }}" 
+                    required>
             </div>
 
             <div class="input-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
+                <!-- Axioma de accesibilidad -->
+                <label for="password" aria-label="Contraseña de acceso">Contraseña:</label>
+                <!-- Axioma de claridad -->
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="••••••••"
+                    required>
             </div>
 
             <div id="notifications">
@@ -22,8 +38,9 @@
                     {% if messages %}
                         {% for category, message in messages %}
                             <div class="notification {{ category }}">
-                                <span class="alert-icon">⚠️</span>
-                                <span class="alert-message">{{ message }}</span>
+                                <span class="alert-icon" aria-hidden="true">⚠️</span>
+                                <!-- Axioma de retroalimentación: role="alert" informa cambios importantes al usuario -->
+                                <span class="alert-message" role="alert">{{ message }}</span>
                             </div>
                         {% endfor %}
                     {% endif %}
@@ -31,11 +48,13 @@
             </div>
 
             <div class="submit-button">
-                <button type="submit" class="btn-login">Iniciar Sesión</button>
+                <!-- Axioma de accesibilidad -->
+                <button type="submit" class="btn-login" aria-label="Botón para iniciar sesión">Iniciar Sesión</button>
             </div>
 
             <div class="back-button">
-                <a href="{{ url_for('index') }}">← Regresar al inicio</a>
+                <!-- Axioma de accesibilidad -->
+                <a href="{{ url_for('index') }}" aria-label="Regresar al inicio">← Regresar al inicio</a>
             </div>
         </form>
     </div>

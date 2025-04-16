@@ -4,9 +4,11 @@
 {% block content %}
 <div class="body">
     <div class="login-container">
+        <!-- Axioma de claridad: título explícito que indica el propósito de la página -->
         <h2 class="login-title">Clínica - Iniciar Sesión Dentista</h2>
 
         <form class="login-form" action="{{ url_for('login_doctor') }}" method="post">
+            <!-- Axioma de accesibilidad: etiquetas asociadas correctamente a los campos -->
             <div class="input-group">
                 <label for="correo">Correo electrónico:</label>
                 <input type="email" id="correo" name="correo" required>
@@ -17,6 +19,7 @@
                 <input type="password" id="password" name="password" required>
             </div>
 
+            <!-- Axioma de retroalimentación: mensajes dinámicos ante errores o validaciones -->
             <div id="notifications">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
@@ -30,10 +33,12 @@
                 {% endwith %}
             </div>
 
+            <!-- Axioma de usabilidad: botón de envío claro y destacado -->
             <div class="submit-button">
                 <button type="submit" class="btn-login">Iniciar Sesión</button>
             </div>
 
+            <!-- Axioma de protección del usuario: opción para regresar fácilmente al inicio -->
             <div class="back-button">
                 <a href="{{ url_for('index') }}">← Regresar al inicio</a>
             </div>

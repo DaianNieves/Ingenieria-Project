@@ -3,10 +3,12 @@ from flask import Flask, render_template, request, redirect, session, url_for, f
 from werkzeug.security import check_password_hash
 from config import Config
 import mysql.connector
+from functools import wraps
 
 app = Flask(__name__, template_folder='Templates')
 app.config.from_object(Config)
 
+# Conexión a la base de datos
 def get_connection():
     return mysql.connector.connect(
         host='localhost',
@@ -15,6 +17,18 @@ def get_connection():
         database='sistema_citas',
         port=3306
     )
+
+# Decorador para proteger las rutas que requieren roles
+def login_required(rol):
+    def wrapper(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if session.get('rol') != rol:
+                flash('Acceso denegado. No tienes permisos.', 'error')
+                return redirect(url_for('index'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return wrapper
 
 @app.route('/')
 def index():
@@ -75,25 +89,18 @@ def login_doctor():
     return render_template('Dentista/login_dentista.html')
 
 @app.route('/panel/administrador')
+@login_required('administrador')
 def panel_admin():
-    if session.get('rol') != 'administrador':
-        flash('Acceso denegado. Inicia sesión como administrador.', 'error')
-        return redirect(url_for('login_admin'))
     return render_template('Administrador/panel_admin.html')
 
 @app.route('/panel/dentista')
+@login_required('doctor')
 def panel_doctor():
-    if session.get('rol') != 'doctor':
-        flash('Acceso denegado. Inicia sesión como dentista.', 'error')
-        return redirect(url_for('login_doctor'))
     return render_template('Dentista/panel_dentista.html')
 
 @app.route('/tratamientos/registrar/<int:cita_id>', methods=['GET', 'POST'])
+@login_required('doctor')
 def registrar_tratamiento(cita_id):
-    if session.get('rol') != 'doctor':
-        flash('Acceso restringido a doctores.', 'error')
-        return redirect(url_for('index'))
-
     if request.method == 'POST':
         diagnostico = request.form['diagnostico']
         tratamiento = request.form['tratamiento']
@@ -119,11 +126,8 @@ def registrar_tratamiento(cita_id):
     return render_template('Dentista/registrar_tratamiento.html', cita_id=cita_id)
 
 @app.route('/panel/administrador/doctores')
+@login_required('administrador')
 def panel_admin_doc():
-    if session.get('rol') != 'administrador':
-        flash('Acceso denegado. Inicia sesión como administrador.', 'error')
-        return redirect(url_for('login_admin'))
-
     try:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -145,11 +149,8 @@ def panel_admin_doc():
     return render_template('Administrador/panel_admin_doc.html', doctores=doctores)
 
 @app.route('/panel/administrador/doctores/registrar', methods=['GET', 'POST'])
+@login_required('administrador')
 def registrar_doctor():
-    if session.get('rol') != 'administrador':
-        flash('Acceso denegado. Inicia sesión como administrador.', 'error')
-        return redirect(url_for('login_admin'))
-
     if request.method == 'POST':
         nombre = request.form['nombre']
         correo = request.form['correo']
@@ -157,6 +158,27 @@ def registrar_doctor():
         especialidad = request.form['especialidad']
         telefono = request.form['telefono']
 
+        # Axioma: Validar que el correo no esté registrado
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM usuarios WHERE correo = %s", (correo,))
+            if cursor.fetchone():
+                flash('❌ El correo ya está registrado.', 'error')
+                return redirect(url_for('registrar_doctor'))
+        except mysql.connector.Error as e:
+            flash(f'❌ Error al verificar el correo: {e}', 'error')
+            return redirect(url_for('registrar_doctor'))
+        finally:
+            if 'cursor' in locals(): cursor.close()
+            if 'conn' in locals() and conn.is_connected(): conn.close()
+
+        # Axioma: La contraseña debe tener al menos 8 caracteres
+        if len(contraseña) < 8:
+            flash('❌ La contraseña debe tener al menos 8 caracteres.', 'error')
+            return redirect(url_for('registrar_doctor'))
+
+        # Hashear la contraseña
         hashed_password = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
         try:
@@ -190,16 +212,14 @@ def registrar_doctor():
     return render_template('Administrador/registrar_doctor.html')
 
 @app.route('/editar_doctor/<int:id>')
+@login_required('administrador')
 def editar_doctor(id):
-    # lógica para editar
+    # Lógica para editar
     ...
 
 @app.route('/eliminar_doctor/<int:id>', methods=['POST'])
+@login_required('administrador')
 def eliminar_doctor(id):
-    if session.get('rol') != 'administrador':
-        flash('Acceso denegado. Solo los administradores pueden eliminar doctores.', 'error')
-        return redirect(url_for('panel_admin'))
-
     try:
         conn = get_connection()
         cursor = conn.cursor()
