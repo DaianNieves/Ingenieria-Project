@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+
+{% block title %}Pacientes Registrados{% endblock %}
+
+{% block content %}
+<div style="padding: 2rem;">
+    <h2 style="text-align: center; color: #1e3a8a;">👨‍⚕️ Lista de Pacientes</h2>
+
+    <div style="text-align: right; margin-bottom: 1.2rem;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} flash-message">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+        <a href="{{ url_for('registrar_paciente_admin') }}"
+           style="background-color: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            ➕ Registrar Paciente
+        </a>
+    </div>
+    {% if pacientes %}
+    <div class="table-responsive">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paciente in pacientes %}
+                <tr>
+                    <td>{{ paciente.nombre }}</td>
+                    <td>{{ paciente.telefono or '—' }}</td>
+                    <td>{{ paciente.fecha_nacimiento or '—' }}</td>
+                    <td class="action-buttons">
+                        <button class="btn-action edit" onclick="openEditPatientModal('{{ paciente.id }}', '{{ paciente.nombre }}', '{{ paciente.telefono }}', '{{ paciente.fecha_nacimiento }}')">
+                            ✏️ Editar
+                        </button>
+                        
+                        <form action="{{ url_for('eliminar_paciente', id=paciente.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este paciente?');">
+                                🗑️ Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-message">No hay pacientes registrados actualmente.</p>
+    {% endif %}
+
+    <div class="back-link-container">
+        <a class="dashboard-card back-link" href="{{ url_for('panel_admin') }}">⬅️ Volver al Panel</a>
+    </div>
+</div>
+
+<!-- Modal para editar paciente -->
+<div id="editPatientModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeEditPatientModal()">&times;</span>
+        <h2>Editar Paciente</h2>
+        <form id="editPacienteForm" method="POST">
+            <input type="hidden" id="pacienteId" name="pacienteId">
+
+            <div class="input-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombrePaciente" name="nombre" required>
+            </div>
+
+            <div class="input-group">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefonoPaciente" name="telefono">
+            </div>
+
+            <div class="input-group">
+                <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                <input type="date" id="fechaNacimientoPaciente" name="fecha_nacimiento">
+            </div>
+
+            <div class="submit-button">
+                <button type="submit">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/functions.js') }}"></script>
+{% endblock %}

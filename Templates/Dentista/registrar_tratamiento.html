@@ -8,63 +8,58 @@
         justify-content: center;
         align-items: center;
         min-height: calc(100vh - 100px);
-        background-color: #f9fafb;
     }
 
     .treatment-form-container {
         background-color: #ffffff;
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 2rem 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         width: 100%;
-        max-width: 480px;
+        max-width: 520px;
+        position: relative;
     }
 
     .treatment-form-container h2 {
         text-align: center;
-        margin-bottom: 1.2rem;
+        margin-bottom: 0.5rem;
         color: #1e3a8a;
-        font-size: 1.3rem;
-        font-weight: 600;
+        font-size: 1.8rem;
+        font-weight: 700;
     }
 
-    .treatment-form-container label {
+    .input-group label {
         font-weight: 600;
         color: #374151;
         margin-bottom: 0.4rem;
         display: block;
     }
 
-    .treatment-form-container select,
-    .treatment-form-container textarea {
+    .input-group select,
+    .input-group textarea {
         width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
+        padding: 0.6rem;
+        margin-bottom: 1.3rem;
         border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        font-size: 0.95rem;
+        border-radius: 10px;
+        font-size: 1rem;
         background-color: #f8fafc;
+        transition: border-color 0.2s ease;
     }
 
-    textarea {
+    .input-group textarea {
         resize: vertical;
-        min-height: 70px;
-        max-height: 120px;
-    }
-
-    .submit-button,
-    .back-button {
-        text-align: center;
-        margin-top: 0.5rem;
+        min-height: 80px;
     }
 
     .submit-button button {
         background-color: #1d4ed8;
         color: white;
-        padding: 0.5rem 1.5rem;
+        padding: 0.75rem 2rem;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 1rem;
+        font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
@@ -73,23 +68,81 @@
         background-color: #2563eb;
     }
 
+    .back-button {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
     .back-button a {
-        display: inline-block;
-        margin-top: 0.5rem;
         color: #475569;
         text-decoration: none;
         font-size: 0.9rem;
+        font-weight: 500;
     }
 
     .back-button a:hover {
         text-decoration: underline;
+        color: #1d4ed8;
+    }
+
+    .flash-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #22c55e;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        animation: fadeOut 5s forwards;
+        z-index: 9999;
+    }
+
+    .flash-notification.error {
+        background-color: #ef4444;
+    }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-20px); }
     }
 </style>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-notification {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
 <div class="form-wrapper">
     <div class="treatment-form-container">
         <h2>🦷 Registrar Tratamiento</h2>
+
         <form method="POST">
+            {% if paciente %}
+                <div class="input-group">
+                    <label>Paciente:</label>
+                    <p><strong>{{ paciente.nombre }}</strong> (📞 {{ paciente.telefono }})</p>
+                    <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
+                </div>
+            {% else %}
+                <div class="input-group">
+                    <label for="paciente_id">Seleccionar Paciente</label>
+                    <select name="paciente_id" id="paciente_id" required>
+                        <option value="">-- Selecciona un paciente --</option>
+                        {% for p in pacientes %}
+                        <option value="{{ p.id }}">{{ p.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
             <div class="input-group">
                 <label for="diagnostico">Diagnóstico</label>
                 <select name="diagnostico" id="diagnostico" required>

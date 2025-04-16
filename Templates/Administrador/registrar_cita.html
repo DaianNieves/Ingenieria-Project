@@ -1,0 +1,188 @@
+{% extends 'layout.html' %}
+{% block title %}Registrar Cita{% endblock %}
+
+{% block content %}
+<style>
+    .flash-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: fadeOut 4s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+    .flash-message.success { background-color: #22c55e; }
+    .flash-message.error { background-color: #ef4444; }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    .form-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .cita-form-container {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .cita-form-container h2 {
+        text-align: center;
+        margin-bottom: 1rem;
+        color: #1e3a8a;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: #1e3a8a;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .back-link i {
+        font-style: normal;
+        margin-right: 6px;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+        color: #2563eb;
+    }
+
+    .section-title {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.3rem;
+    }
+
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background-color: #fff;
+    }
+
+    .input-group textarea {
+        min-height: 70px;
+        resize: vertical;
+    }
+
+    .submit-button {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .submit-button button {
+        background-color: #2563eb;
+        color: white;
+        padding: 0.6rem 2rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-button button:hover {
+        background-color: #1d4ed8;
+    }
+</style>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="form-wrapper">
+    <div class="cita-form-container">
+        <a href="{{ url_for('panel_admin') }}" class="back-link"><i>←</i> Volver al Panel</a>
+
+        <h2>📅 Registrar Nueva Cita</h2>
+
+        <form method="POST">
+            <div class="section-title">👤 Selección del Paciente</div>
+
+            <div class="input-group">
+                <label for="paciente_id">Paciente</label>
+                <select id="paciente_id" name="paciente_id" required>
+                    <option value="">-- Selecciona un paciente --</option>
+                    {% for paciente in pacientes %}
+                        <option value="{{ paciente.id }}">{{ paciente.nombre }} - {{ paciente.telefono }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="doctor_id">👨🏻‍⚕️ Asignar Doctor</label>
+                <select id="doctor_id" name="doctor_id" required>
+                    <option value="">-- Selecciona un doctor --</option>
+                    {% for doctor in doctores %}
+                        <option value="{{ doctor.id }}">{{ doctor.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="section-title">🕒 Detalles de la Cita</div>
+
+            <div class="input-group">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" name="fecha" required>
+            </div>
+
+            <div class="input-group">
+                <label for="hora">Hora</label>
+                <input type="time" id="hora" name="hora" required>
+            </div>
+
+            <div class="input-group">
+                <label for="descripcion">Observaciones</label>
+                <textarea id="descripcion" name="descripcion" placeholder="Motivo de la cita, síntomas, etc."></textarea>
+            </div>
+
+            <div class="submit-button">
+                <button type="submit">💾 Guardar Cita</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

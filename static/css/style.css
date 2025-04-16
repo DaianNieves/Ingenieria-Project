@@ -88,7 +88,6 @@ body {
     background-color: #27ae60;
 }
 
-
 /* ----------------- Links ----------------- */
 .back-button,
 .forgot-password {
@@ -353,37 +352,192 @@ body {
 /* ----------------- Botones de acción ----------------- */
 .action-buttons {
     display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
 }
 
 .btn-action {
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    text-decoration: none;
-    color: white;
-    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .btn-action.edit {
-    background-color: #f9a825;
+    background-color: #3b82f6; /* Azul */
+    color: white;
 }
 
 .btn-action.edit:hover {
-    background-color: #f57f17;
+    background-color: #2563eb;
+    transform: scale(1.05);
 }
 
 .btn-action.delete {
-    background-color: #e53935;
+    background-color: #ef4444; /* Rojo */
+    color: white;
 }
 
 .btn-action.delete:hover {
-    background-color: #c62828;
+    background-color: #dc2626;
+    transform: scale(1.05);
 }
 
+.styled-table td {
+    vertical-align: middle;
+}
+/*--------------------- Para Modal ---------------------*/
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro translúcido */
+    padding-top: 50px;
+}
 
+/* Contenido del modal */
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px; /* Limita el tamaño máximo */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Botón de cerrar */
+.close-btn {
+    color: #aaa;
+    font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+/* Título del modal */
+.modal-content h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Estilo para los inputs */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Estilo para el botón de guardar cambios */
+.submit-button {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.submit-button button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo del fondo y transición */
+.modal.fade {
+    opacity: 0;
+}
+
+.modal.show {
+    opacity: 1;
+    transition: opacity 0.3s ease-in;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .input-group input {
+        font-size: 14px;
+    }
+
+    .submit-button button {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Estilo para el botón "Cancelar" */
+.btn-cancelar {
+    display: inline-block;
+    background-color: #e74c3c; /* Rojo */
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-left: 1rem; /* Separación con el botón "Registrar" */
+    transition: background-color 0.3s ease;
+}
+
+.btn-cancelar:hover {
+    background-color: #c0392b; /* Rojo oscuro al pasar el ratón */
+}
 
 /* ----------------- Footer ----------------- */
 footer {

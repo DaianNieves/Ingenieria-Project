@@ -1,0 +1,174 @@
+{% extends 'layout.html' %}
+{% block title %}Registrar Paciente{% endblock %}
+
+{% block content %}
+<style>
+    .flash-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: fadeOut 4s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+
+    .flash-message.success { background-color: #22c55e; }
+    .flash-message.error { background-color: #ef4444; }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    .form-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 100px);
+        background: none;
+        position: relative;
+        padding: 2rem;
+    }
+
+    .volver-panel {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+    }
+
+    .volver-panel a {
+        background-color: #f1f5f9;
+        color: #1e3a8a;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .volver-panel a:hover {
+        background-color: #dbeafe;
+        color: #2563eb;
+    }
+
+    .form-container {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem 2.5rem;
+        width: 100%;
+        max-width: 460px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e5e7eb;
+    }
+
+    .form-container h2 {
+        text-align: center;
+        color: #1e40af;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-container label {
+        font-weight: 600;
+        margin-top: 1rem;
+        margin-bottom: 0.3rem;
+        display: block;
+        color: #334155;
+    }
+
+    .form-container input {
+        width: 100%;
+        padding: 0.65rem;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-container input:focus {
+        border-color: #2563eb;
+        outline: none;
+    }
+
+    .submit-button {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .submit-button button {
+        flex: 1;
+        background-color: #2563eb;
+        color: white;
+        padding: 0.75rem;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-button button:hover {
+        background-color: #1d4ed8;
+    }
+
+    .submit-button .btn-cancelar {
+        flex: 1;
+        background-color: #ef4444;
+        color: white;
+        text-align: center;
+        padding: 0.75rem;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-button .btn-cancelar:hover {
+        background-color: #dc2626;
+    }
+</style>
+
+<!-- Mensaje flotante -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="form-wrapper">
+    <div class="volver-panel">
+        <a href="{{ url_for('panel_admin') }}">← Volver al Panel</a>
+    </div>
+
+    <div class="form-container">
+        <h2>➕ Registrar Paciente</h2>
+        <form method="POST">
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" id="nombre" required>
+
+            <label for="telefono">Teléfono:</label>
+            <input type="text" name="telefono" id="telefono">
+
+            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
+
+            <div class="submit-button">
+                <button type="submit">Guardar</button>
+                <a href="{{ url_for('panel_admin') }}" class="btn-cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
